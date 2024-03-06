@@ -8,14 +8,6 @@
         "type": "tabs",
         "children": [
           {
-            "id": "dce1dec1f0fa486f",
-            "type": "leaf",
-            "state": {
-              "type": "graph",
-              "state": {}
-            }
-          },
-          {
             "id": "c19aaeb20fb10c2c",
             "type": "leaf",
             "state": {
@@ -26,9 +18,57 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "bde7eaf9cba98b62",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Exercici pràctica Thread.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "34d195eb12c6cc60",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Sistema amb 2 Threads.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "f01c523b3da1d2a7",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Mutex without thread number as argument.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "ec2d3daaceb19f1a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Monitors.md",
+                "mode": "source",
+                "source": false
+              }
+            }
           }
         ],
-        "currentTab": 1
+        "currentTab": 4
       }
     ],
     "direction": "vertical"
@@ -94,7 +134,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "JAVA - POO.md",
+                "file": "Monitors.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -111,7 +151,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "JAVA - POO.md",
+                "file": "Monitors.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -134,7 +174,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "JAVA - POO.md"
+                "file": "Monitors.md"
               }
             }
           }
@@ -155,19 +195,23 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "c19aaeb20fb10c2c",
+  "active": "ec2d3daaceb19f1a",
   "lastOpenFiles": [
-    "PRACTICA_1/src/practica2/P1Sync/Monitor/TestIDSync.java",
-    "PRACTICA_1/src/practica2/P1Sync/Monitor/MonitorSync.java",
-    "PRACTICA_1/src/practica2/P1Sync/Monitor/CounterThreadIDSync.java",
-    "PRACTICA_1/src/practica2/P0CZ/Monitor/TestSumCZ.java",
-    "PRACTICA_1/src/practica2/P0CZ/Monitor/MonitorCZ.java",
-    "PRACTICA_1/src/practica2/P0CZ/Monitor/CounterThreadCZ.java",
-    "PRACTICA_1/src/practica2/Protocol/Test.java",
-    "PRACTICA_1/src/practica2/Protocol/SimNet_Monitor.java",
-    "PRACTICA_1/src/practica2/P1Sync/TestID.java",
-    "PRACTICA_1/src/practica2/P1Sync/Monitor",
-    "PRACTICA_1/src/practica2/P1Sync/CounterThreadID.java",
+    "Mutex without thread number as argument.md",
+    "Monitors.md",
+    "Sistema amb 2 Threads.md",
+    "CLASE COMPTADOR THREADS.md",
+    "Exercici pràctica Thread.md",
+    "PRACTICA_1/build/classes/practica2/P1Sync/Monitor/TestIDSync.class",
+    "PRACTICA_1/build/classes/practica2/P1Sync/Monitor/MonitorSync.class",
+    "PRACTICA_1/build/classes/practica2/P1Sync/Monitor/CounterThreadIDSync.class",
+    "PRACTICA_1/build/classes/practica2/P0CZ/Monitor/TestSumCZ.class",
+    "PRACTICA_1/build/classes/practica2/P0CZ/Monitor/MonitorCZ.class",
+    "PRACTICA_1/build/classes/practica2/P0CZ/Monitor/CounterThreadCZ.class",
+    "PRACTICA_1/build/classes/practica2/Protocol/Test.class",
+    "PRACTICA_1/build/classes/practica2/Protocol/SimNet_Monitor.class",
+    "PRACTICA_1/build/classes/practica2/P1Sync/TestID.class",
+    "PRACTICA_1/build/classes/practica2/P1Sync/Monitor",
     "JAVA - POO.md",
     "Welcome.md"
   ]
