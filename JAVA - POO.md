@@ -47,8 +47,9 @@ public class CircularQueue extends Queue {
 		return numElems == capacitat;
 	}
 	public void put(Object e) {
-		espai[ultim] = E;
+		espai[ultim] = e;
 		ultim = (ultim+1) % capacitat;
+		numElems++;
 	}
 
 	public Object get() {
@@ -116,4 +117,3 @@ public class LinkedQueue extends Queue {
 
 - El cicle de vida d'una variable comença i acaba entre les claus {}
 - El cicle de vida d'un objecte comença quan és creat pel constructor i referenciat per una variable i acaba quan es totes les variables que el tenen com a referència deixen de referenciar-lo.
-
