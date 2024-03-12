@@ -61,7 +61,18 @@ public class CircularQueue<E> implements Queue<E> {
 
     @Override
     public String toString() {
-        return queue.toString();
+        String queueString = new String();
+        for (int i = 0; i < N; i++) {
+            if (queue[i] != null) {
+                queueString += queue[i].toString();
+                queueString += ", ";
+            }
+            else {
+                queueString += "null, ";
+            }
+        }
+        
+        return queueString;
     }
 
     @Override
@@ -75,7 +86,7 @@ public class CircularQueue<E> implements Queue<E> {
 
         @Override
         public boolean hasNext() {
-            return !((currentIndex+1) % N == ultim);
+            return !(currentIndex == ultim);
         }
 
         @Override
@@ -91,23 +102,20 @@ public class CircularQueue<E> implements Queue<E> {
         @Override
         public void remove() {
             int itemsLeft;
-            currentIndex--;
-            if (currentIndex < 0) {
-                currentIndex += N;
-            }
-            numElems--;
+            currentIndex = (currentIndex - 1 + N) % N;
+            
             if (currentIndex < ultim) {
                 itemsLeft = ultim - currentIndex;
             } else {
-                itemsLeft = N - currentIndex + ultim;
+                itemsLeft = numElems - currentIndex + ultim + 1;
             }
-            for (int i = currentIndex; i < itemsLeft; i++) {
-                queue[i%N] = queue[(i+1)%N];
+
+            for (int i = 0; i < itemsLeft-1; i++) {
+                queue[(currentIndex+i)%N] = queue[(currentIndex+i+1)%N];
             }
-            ultim = ultim - 1;
-            if (ultim < 0) {
-                ultim += N;
-            }
+            ultim = ( ultim - 1 + N ) % N;
+            queue[ultim] = null;
+            numElems--;
         }
 
     }
