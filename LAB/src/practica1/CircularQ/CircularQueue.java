@@ -62,7 +62,7 @@ public class CircularQueue<E> implements Queue<E> {
     @Override
     public String toString() {
         String queueString = new String();
-        for (int i = 0; i < N; i++) {
+        for (int i = 0; i < numElems; i++) {
             if (queue[i] != null) {
                 queueString += queue[i].toString();
                 queueString += ", ";
@@ -81,22 +81,23 @@ public class CircularQueue<E> implements Queue<E> {
     }
 
     class MyIterator implements Iterator {
-
+        boolean first;
         int currentIndex;
 
         @Override
         public boolean hasNext() {
-            return !(currentIndex == ultim);
+            if ((currentIndex == ultim) && (!first)) {
+                return false;
+            }
+            first = false;
+            return true;
         }
 
         @Override
         public E next() {
-            if (this.hasNext()) {
-                E resultat = queue[currentIndex];
-                currentIndex = (currentIndex + 1) % N;
-                return resultat;
-            }
-            return null;
+            E resultat = queue[currentIndex];
+            currentIndex = (currentIndex + 1) % N;
+            return resultat;
         }
         
         @Override

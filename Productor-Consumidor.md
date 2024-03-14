@@ -66,11 +66,3 @@ public class Consumidor implements Runnable {
 }
 ```
 
-Programar un monitor ciclic {
-amb un únic mètode atura()
-
-- El primer thread que crida atura() es bloqueja
-- El segon thread que crida atura() es bloqueja
-- El tercer thread desperta als altres dos i continuen tots 3
-I així de manera cíclica
-}
