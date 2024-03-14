@@ -78,9 +78,33 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "f13c955ae384d668",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Monitor ciclic.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "f11a9658f4df9c3c",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Intercanviador.md",
+                "mode": "source",
+                "source": false
+              }
+            }
           }
         ],
-        "currentTab": 5
+        "currentTab": 7
       }
     ],
     "direction": "vertical"
@@ -146,7 +170,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Productor-Consumidor.md",
+                "file": "Intercanviador.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -163,7 +187,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Productor-Consumidor.md",
+                "file": "Intercanviador.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -186,7 +210,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Productor-Consumidor.md"
+                "file": "Intercanviador.md"
               }
             }
           }
@@ -207,8 +231,10 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "9fc172a092cb02d8",
+  "active": "f11a9658f4df9c3c",
   "lastOpenFiles": [
+    "Monitor ciclic.md",
+    "Intercanviador.md",
     "Productor-Consumidor.md",
     "JAVA - POO.md",
     "LAB/build/classes/practica2/P0CZ/Monitor/TestSumCZ.class",
