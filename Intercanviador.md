@@ -7,22 +7,22 @@ public class Intercanviador {
     protected Object espai;
     protected Condition segon;
     
-    Object intercanvia (Object elem) throws InterruptedException {
+    Object intercanviador (Object elem) throws InterruptedException {
         mon.lock();
         Object tmp = null;
         arribats++;
         if (arribats == 1) {
             espai = elem;
             segon.await();
-            tmp = espai;
+            Object tmp = espai;
             arribats = 0; // L'ultim que marxa es el primer thread
         } else {
-            tmp = espai;
+            Object tmp = espai;
             espai = elem;
             segon.signal();
         }
         mon.unlock();
-        return espai;
+        return tmp;
     }
 }
 
@@ -46,24 +46,27 @@ public class Intercanviador {
     protected Lock mon;
     protected int arribats;
     protected Object espai;
-    protected Condition ego;
+    protected Condition intercanviAcabat;
     
-    Object intercanvia (Object elem) throws InterruptedException {
+    Object intercanviador (Object elem) throws InterruptedException {
         mon.lock();
         Object tmp = null;
-        arribats++;
-        if (arribats > 2) {
-            ego.await();
+
+        while (arribats == 2) {
+            intercanviAcabat.await();
         }
-        else if (arribats == 1) {
-            espai = elem;
-            ego.await();
-            tmp = espai;
-            arribats = 0; // L'ultim que marxa es el primer
+        if (arribats == 1) {
+	        arribats++;
+			espai = elem;
+			ego.await();
+			tmp = espai;
+			arribats = 0; // L'ultim que marxa es el primer
+			intercanviAcabat.signal();
+			intercanviAcabat.signal();
         } else {
-            tmp = espai;
-            espai = elem;
-            ego.signal();
+			tmp = espai;
+			espai = elem;
+			ego.signal();
         }
         mon.unlock();
         return espai;
