@@ -30,6 +30,9 @@ public class GroupEx {
     // el grup d'n threads passara a usar el recurs, si no s'espera
     public void enter() {
         mon.lock();
+        //----------SALA D'ESPERA 1----------
+        //Fa esperar als threads que no son l'ultim del bloc (l'enessim)
+        //L'ultim thread manda una senyal per despertar n-1 threads
         numRequests++;
         while (numRequests % numThreads != 0) {
             potEsperar.awaitUninterruptibly();
@@ -39,11 +42,16 @@ public class GroupEx {
                 potEsperar.signal();
             }
         }
-
+        
+        //----------SALA D'ESPERA 2----------
+        //Si s'esta usant el recurs fa esperar tots els threads
+        //quan un bloc d'n threads invoqui exit(), n threads surten d'aquest bucle
         while (usantRecurs) {
             potEntrar.awaitUninterruptibly();
         }
         
+        //L'ultim thread en entrar al recurs força a esperar el
+        //seguent bloc de threads fins que aquest bloc surti
         numEntrant++;
         if (numEntrant % numThreads == 0) {
             usantRecurs = true;
@@ -56,6 +64,8 @@ public class GroupEx {
     // puguin accedir al recurs
     public void exit() {
         mon.lock();
+        // l'ultim thread en sortir desperta un bloc de n threads i a mes
+        // els indica que el recurs s'ha deixat d'utilitzar per que entrin
         numSortint++;
         if (numSortint % numThreads == 0) {
             usantRecurs = false;
