@@ -31,13 +31,13 @@ public class GroupEx {
     public void enter() {
         mon.lock();
         numRequests++;
-        if (numRequests == numThreads) {
+        while (numRequests % numThreads != 0) {
+            potEsperar.awaitUninterruptibly();
+        }
+        if (numRequests % numThreads == 0) {
             for(int i = 0; i < numThreads - 1; i++) {
                 potEsperar.signal();
             }
-            numRequests = 0;
-        } else {
-            potEsperar.awaitUninterruptibly();
         }
 
         while (usantRecurs) {
