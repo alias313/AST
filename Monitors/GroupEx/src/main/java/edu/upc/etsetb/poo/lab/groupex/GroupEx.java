@@ -43,10 +43,10 @@ public class GroupEx {
         while (usantRecurs) {
             potEntrar.awaitUninterruptibly();
         }
+        
         numEntrant++;
-        if (numEntrant == numThreads) {
+        if (numEntrant % numThreads == 0) {
             usantRecurs = true;
-            numEntrant = 0;
         }
         System.out.println("He entrado!");
         mon.unlock();
@@ -57,12 +57,11 @@ public class GroupEx {
     public void exit() {
         mon.lock();
         numSortint++;
-        if (numSortint == numThreads) {
+        if (numSortint % numThreads == 0) {
             usantRecurs = false;
             for(int i = 0; i < numThreads; i++) {
                 potEntrar.signal();
             }
-            numSortint = 0;
         }
         System.out.println("He salido!");        
         mon.unlock();
