@@ -102,9 +102,21 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "1711e8e23698b711",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Lectors-Escriptors.md",
+                "mode": "source",
+                "source": false
+              }
+            }
           }
         ],
-        "currentTab": 7
+        "currentTab": 8
       }
     ],
     "direction": "vertical"
@@ -170,7 +182,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Intercanviador.md",
+                "file": "Lectors-Escriptors.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -187,7 +199,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Intercanviador.md",
+                "file": "Lectors-Escriptors.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -210,7 +222,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Intercanviador.md"
+                "file": "Lectors-Escriptors.md"
               }
             }
           }
@@ -231,11 +243,12 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "f11a9658f4df9c3c",
+  "active": "1711e8e23698b711",
   "lastOpenFiles": [
-    "Monitor ciclic.md",
-    "Intercanviador.md",
     "Productor-Consumidor.md",
+    "Lectors-Escriptors.md",
+    "Intercanviador.md",
+    "Monitor ciclic.md",
     "JAVA - POO.md",
     "LAB/build/classes/practica2/P0CZ/Monitor/TestSumCZ.class",
     "LAB/build/classes/practica2/P0CZ/Monitor/MonitorCZ.class",
