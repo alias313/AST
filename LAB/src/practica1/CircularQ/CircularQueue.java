@@ -86,11 +86,7 @@ public class CircularQueue<E> implements Queue<E> {
 
         @Override
         public boolean hasNext() {
-            if ((currentIndex == ultim) && (!first)) {
-                return false;
-            }
-            first = false;
-            return true;
+            return currentIndex < N;
         }
 
         @Override
