@@ -18,7 +18,7 @@ public class TestCQ_ite {
         while (ite.hasNext()) {
             int valor = ite.next();
             System.out.println("Valor: "+ valor);
-            if (valor == 0 || valor == 4 || valor == 5 || valor == 19) {
+            if (valor == 0 || valor == 4 || valor == 5 || valor == 9) {
                 ite.remove();
                 System.out.println("taken: " + valor);
                 System.out.println(q.toString());

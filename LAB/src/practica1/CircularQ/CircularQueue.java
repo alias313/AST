@@ -81,33 +81,32 @@ public class CircularQueue<E> implements Queue<E> {
     }
 
     class MyIterator implements Iterator {
-        boolean first;
         int currentIndex;
 
         @Override
         public boolean hasNext() {
-            return currentIndex < N;
+            return currentIndex < ultim;
         }
 
         @Override
         public E next() {
             E resultat = queue[currentIndex];
             currentIndex = (currentIndex + 1) % N;
+            System.out.println("CurrentIndex: " + currentIndex);
             return resultat;
         }
         
         @Override
         public void remove() {
-            int itemsLeft;
             currentIndex = (currentIndex - 1 + N) % N;
             
-            if (currentIndex < ultim) {
-                itemsLeft = ultim - currentIndex;
-            } else {
-                itemsLeft = numElems - currentIndex + ultim + 1;
-            }
+//            if (currentIndex < ultim) {
+//                itemsLeft = ultim - currentIndex;
+//            } else {
+//                itemsLeft = numElems - currentIndex + ultim + 1;
+//            }
 
-            for (int i = 0; i < itemsLeft-1; i++) {
+            for (int i = 0; i < numElems-currentIndex-1; i++) {
                 queue[(currentIndex+i)%N] = queue[(currentIndex+i+1)%N];
             }
             ultim = ( ultim - 1 + N ) % N;
