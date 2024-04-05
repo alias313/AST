@@ -32,7 +32,7 @@ public class CircularQueue<E> implements Queue<E> {
 
     @Override
     public boolean full() {
-        if (ultim == primer && !empty()) return true;
+        if (numElems == N) return true;
         return false;
     }
 
@@ -101,7 +101,6 @@ public class CircularQueue<E> implements Queue<E> {
         @Override
         public void remove() {
             currentIndex = (currentIndex - 1 + N) % N;
-            
             for (int i = 0; i < numElems-currentIndex-1; i++) {
                 queue[(currentIndex+i)%N] = queue[(currentIndex+i+1)%N];
             }
