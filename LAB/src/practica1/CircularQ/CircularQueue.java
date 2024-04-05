@@ -52,17 +52,16 @@ public class CircularQueue<E> implements Queue<E> {
 
     @Override
     public void put(E e) {
-        if (!full()) {
-            queue[ultim] = e;
-            ultim = (ultim + 1) % N;
-            numElems++;
-        }
+        queue[ultim] = e;
+        ultim = (ultim + 1) % N;
+        System.out.println("Ultim: " + ultim);
+        numElems++;
     }
 
     @Override
     public String toString() {
         String queueString = new String();
-        for (int i = 0; i < numElems; i++) {
+        for (int i = 0; i < N; i++) {
             if (queue[i] != null) {
                 queueString += queue[i].toString();
                 queueString += ", ";
@@ -85,14 +84,17 @@ public class CircularQueue<E> implements Queue<E> {
 
         @Override
         public boolean hasNext() {
-            return currentIndex < ultim;
+            if (full()) {
+                return true;
+            } else {
+                return currentIndex < ultim;
+            }
         }
 
         @Override
         public E next() {
             E resultat = queue[currentIndex];
             currentIndex = (currentIndex + 1) % N;
-            System.out.println("CurrentIndex: " + currentIndex);
             return resultat;
         }
         
@@ -100,12 +102,6 @@ public class CircularQueue<E> implements Queue<E> {
         public void remove() {
             currentIndex = (currentIndex - 1 + N) % N;
             
-//            if (currentIndex < ultim) {
-//                itemsLeft = ultim - currentIndex;
-//            } else {
-//                itemsLeft = numElems - currentIndex + ultim + 1;
-//            }
-
             for (int i = 0; i < numElems-currentIndex-1; i++) {
                 queue[(currentIndex+i)%N] = queue[(currentIndex+i+1)%N];
             }
