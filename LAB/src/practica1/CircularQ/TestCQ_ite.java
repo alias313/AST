@@ -32,13 +32,13 @@ public class TestCQ_ite {
         System.out.println("Queue content after put: " + q);
         
         q.get();
-        
+        Iterator<Integer> ite1 = q.iterator();
         System.out.println("Queue content after get: " + q);
-        while (ite.hasNext()) {
-            int valor = ite.next();
+        while (ite1.hasNext()) {
+            int valor = ite1.next();
             System.out.println("Valor: "+ valor);
             if (valor == 13) {
-                ite.remove();
+                ite1.remove();
                 System.out.println("taken: " + valor);
                 System.out.println(q.toString());
             }

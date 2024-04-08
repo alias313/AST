@@ -93,14 +93,6 @@ public class CircularQueue<E> implements Queue<E> {
 
         @Override
         public E next() {
-            // Temporary fix, resets index when
-            // queue elemens have been replaced by null and
-            // index happens to land on one of those
-            // so the next time hasNext is called it will return true
-            // but next will return null, this is is bandaid fix for that
-            if (queue[currentIndex] == null) {
-                currentIndex = primer;
-            }
             E resultat = queue[currentIndex];
             currentIndex = (currentIndex + 1) % N;
             return resultat;
