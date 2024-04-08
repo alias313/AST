@@ -7,7 +7,7 @@ public class TestCQ_ite {
     public static void main(String[] args) {
 
         CircularQueue<Integer> q = new CircularQueue<>(20);
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 0; i++) {
             q.put(i);
         }
         q.get();
@@ -34,7 +34,6 @@ public class TestCQ_ite {
         q.get();
         
         System.out.println("Queue content after get: " + q);
-
         while (ite.hasNext()) {
             int valor = ite.next();
             System.out.println("Valor: "+ valor);

@@ -43,6 +43,7 @@ public class CircularQueue<E> implements Queue<E> {
 
     @Override
     public E get() {
+        if (empty()) return null;
         E resultat = queue[primer];
         queue[primer] = null;
         primer = (primer + 1) % N;
@@ -86,15 +87,20 @@ public class CircularQueue<E> implements Queue<E> {
 
         @Override
         public boolean hasNext() {
-            if (full()) {
-                return true;
-            } else {
-                return !(currentIndex == ultim);
-            }
+            if (full()) return true;
+            return !(currentIndex == ultim);
         }
 
         @Override
         public E next() {
+            // Temporary fix, resets index when
+            // queue elemens have been replaced by null and
+            // index happens to land on one of those
+            // so the next time hasNext is called it will return true
+            // but next will return null, this is is bandaid fix for that
+            if (queue[currentIndex] == null) {
+                currentIndex = primer;
+            }
             E resultat = queue[currentIndex];
             currentIndex = (currentIndex + 1) % N;
             return resultat;
@@ -109,7 +115,7 @@ public class CircularQueue<E> implements Queue<E> {
             } else {
                 itemsLeft = numElems - currentIndex + ultim + 1;
             }
-
+            
             for (int i = 0; i < itemsLeft-1; i++) {
                 queue[(currentIndex+i)%N] = queue[(currentIndex+i+1)%N];
             }
@@ -117,6 +123,6 @@ public class CircularQueue<E> implements Queue<E> {
             queue[ultim] = null;
             numElems--;
         }
-
+        
     }
 }
