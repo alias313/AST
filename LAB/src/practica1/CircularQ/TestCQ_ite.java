@@ -10,6 +10,7 @@ public class TestCQ_ite {
         for (int i = 0; i < 20; i++) {
             q.put(i);
         }
+        q.get();
         System.out.println("Queue content: " + q.toString());
 
         Iterator<Integer> ite = q.iterator();
@@ -28,6 +29,20 @@ public class TestCQ_ite {
         for (int i = 10; i < 15; i++) {
             q.put(i);
         }
-        System.out.println("Queue content: " + q);
+        System.out.println("Queue content after put: " + q);
+        
+        q.get();
+        
+        System.out.println("Queue content after get: " + q);
+
+        while (ite.hasNext()) {
+            int valor = ite.next();
+            System.out.println("Valor: "+ valor);
+            if (valor == 13) {
+                ite.remove();
+                System.out.println("taken: " + valor);
+                System.out.println(q.toString());
+            }
+        }
     }
 }
