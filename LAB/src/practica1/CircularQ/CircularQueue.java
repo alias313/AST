@@ -97,9 +97,6 @@ public class CircularQueue<E> implements Queue<E> {
         public E next() {
             E resultat = queue[currentIndex];
             currentIndex = (currentIndex + 1) % N;
-                                System.out.println("Primer: " + primer);
-            System.out.println("Ultim: " + ultim);
-
             return resultat;
         }
         
@@ -119,9 +116,6 @@ public class CircularQueue<E> implements Queue<E> {
             ultim = ( ultim - 1 + N ) % N;
             queue[ultim] = null;
             numElems--;
-            System.out.println("Primer: " + primer);
-            System.out.println("Ultim: " + ultim);
-
         }
 
     }
