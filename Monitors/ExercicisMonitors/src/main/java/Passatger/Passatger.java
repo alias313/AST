@@ -10,7 +10,9 @@ package Passatger;
  */
 public class Passatger implements Runnable {
     protected MuntanyaRussa atraccio;
-    
+    public Passatger(MuntanyaRussa monitor) {
+        atraccio = monitor;
+    }
     public void run() {
         while(true) {
             atraccio.pujar();

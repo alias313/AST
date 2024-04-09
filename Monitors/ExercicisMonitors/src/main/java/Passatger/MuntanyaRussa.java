@@ -6,6 +6,7 @@ package Passatger;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  *
@@ -14,49 +15,66 @@ import java.util.concurrent.locks.Lock;
 public class MuntanyaRussa {
     protected Lock mon;
     protected int capacitat, passatgers;
-    protected boolean sortint;
-    protected Condition ple, aturat;
+    protected int estat;
+    protected final int PUJANT = 10, CIRCULANT = 20, BAIXANT = 30;
+    protected Condition poderPujar, poderBaixar, poderCircular;
 
     public MuntanyaRussa(int capacitat) {
         this.capacitat = capacitat;
+        mon = new ReentrantLock();
+        poderPujar = mon.newCondition();
+        poderBaixar = mon.newCondition();
+        poderCircular = mon.newCondition();
     }
     
     public void pujar() {
         mon.lock();
-        while (passatgers > capacitat || sortint) {
-            ple.awaitUninterruptibly();
+        if (passatgers < capacitat && estat != BAIXANT) {
+            estat = PUJANT;
         }
-        passatgers = passatgers + 1;
+        while (estat != PUJANT) {
+            poderPujar.awaitUninterruptibly();
+        }
+        //System.out.println("PUJA: " + passatgers);
+        passatgers = passatgers+1;
         if (passatgers == capacitat) {
-            aturat.signal();
+            //System.out.println("PUJA ULTIM");
+            estat = CIRCULANT;
+            //System.out.println("VAGO PLE");
+            poderCircular.signal();
         }
         mon.unlock();
     }
     
     public void baixar() {
         mon.lock();
-        sortint = true;
-        passatgers = passatgers - 1;
+        while (estat != BAIXANT) {
+            poderBaixar.awaitUninterruptibly();
+        }
+        //System.out.println("BAIXA: " + passatgers);
+        passatgers = passatgers-1;
         if (passatgers == 0) {
-            sortint = false;
-            ple.signalAll();
+            //System.out.println("BAIXA ULTIM");
+            estat = PUJANT;
+            poderPujar.signalAll();
         }
         mon.unlock();
     }
     
     public void arrencar() {
         mon.lock();
-        if (passatgers < capacitat) {
-            aturat.awaitUninterruptibly();
+        if (estat != CIRCULANT) {
+            poderCircular.awaitUninterruptibly();
         }
+        //System.out.println("VAGO ESTA CIRCULANT");
         mon.unlock();
     }
     
     public void arribada() {
         mon.lock();
-        if (sortint) {
-            aturat.awaitUninterruptibly();
-        }
+        estat = BAIXANT;
+        poderBaixar.signalAll();
+        //System.out.println("VAGO HA ARRIBAT");
         mon.unlock();
     }
 }
