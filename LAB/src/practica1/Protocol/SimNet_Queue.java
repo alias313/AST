@@ -15,16 +15,16 @@ public class SimNet_Queue implements SimNet {
 
   @Override
   public void send(TCPSegment s) {
-    throw new RuntimeException("//Completar...");
+    queue.put(s);
   }
 
   @Override
   public TCPSegment receive() {
-    throw new RuntimeException("//Completar...");
+    return queue.get();
   }
 
   @Override
   public int getMTU() {
-    throw new UnsupportedOperationException("Not supported yet. No cal completar en aquesta pràctica");
+    return Const.SIMNET_QUEUE_SIZE;
   }
 }
