@@ -12,8 +12,8 @@ public class Test {
     TCPSegment.SHOW_DATA = true;
     
     SimNet net = new SimNet_Queue();
-    Sender   s = new Sender(new TSocketSend(net), 10, 1, 100);
-    Receiver r = new Receiver(new TSocketRecv(net), 1, 500);
+    Sender   s = new Sender(new TSocketSend(net), 100, 17, 10);
+    Receiver r = new Receiver(new TSocketRecv(net), 20, 25);
     
     s.run();
     r.run();

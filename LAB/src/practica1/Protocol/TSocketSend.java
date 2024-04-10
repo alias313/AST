@@ -1,4 +1,4 @@
-package practica1.Protocol;
+    package practica1.Protocol;
 
 import util.TCPSegment;
 import util.TSocket_base;
@@ -12,6 +12,13 @@ public class TSocketSend extends TSocket_base {
 
   @Override
   public void sendData(byte[] data, int offset, int length) {
-    throw new RuntimeException("//Completar...");
+    TCPSegment segment = new TCPSegment();
+    byte[] copyData= new byte[length];
+    for (int i = 0; i < length; i++) {
+        copyData[i] = data[offset+i];
+    }
+    segment.setData(copyData);
+    segment.setPsh(true);
+    super.network.send(segment);
   }
 }
