@@ -13,16 +13,8 @@ public class TSocketRecv extends TSocket_base {
   @Override
   public int receiveData(byte[] data, int offset, int length) {
     TCPSegment segment = super.network.receive();
-    byte[] segmentData = segment.getData();
-    
-    for (int i = 0; i < length; i++) {
-        if (segmentData.length == i) {
-            return i;
-        }
-        
-        data[offset+i] = segmentData[i];
-    }
-    
-    return length;
+    int segmentLength = segment.getDataLength();
+    System.arraycopy(segment.getData(), 0, data, offset, segmentLength);
+    return segment.getDataLength();
   }
 }

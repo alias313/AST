@@ -13,11 +13,7 @@ public class TSocketSend extends TSocket_base {
   @Override
   public void sendData(byte[] data, int offset, int length) {
     TCPSegment segment = new TCPSegment();
-    byte[] copyData= new byte[length];
-    for (int i = 0; i < length; i++) {
-        copyData[i] = data[offset+i];
-    }
-    segment.setData(copyData);
+    segment.setData(data, offset, length);
     segment.setPsh(true);
     super.network.send(segment);
   }
