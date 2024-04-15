@@ -102,13 +102,7 @@ public class CircularQueue<E> implements Queue<E> {
         public void remove() {
             int itemsLeft;
             currentIndex = (currentIndex - 1 + N) % N;
-            if (currentIndex < ultim) {
-                itemsLeft = ultim - currentIndex;
-            } else {
-                itemsLeft = numElems - currentIndex + ultim + 1;
-            }
-            
-            for (int i = 0; i < itemsLeft-1; i++) {
+            for (int i = 0; i < primer+numElems-currentIndex-1; i++) {
                 queue[(currentIndex+i)%N] = queue[(currentIndex+i+1)%N];
             }
             ultim = ( ultim - 1 + N ) % N;
