@@ -15,8 +15,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class MuntanyaRussa {
     protected Lock mon;
     protected int capacitat, passatgers;
-    protected int estat;
     protected final int PUJANT = 10, CIRCULANT = 20, BAIXANT = 30;
+    protected int estat = PUJANT;
     protected Condition poderPujar, poderBaixar, poderCircular;
 
     public MuntanyaRussa(int capacitat) {
@@ -29,18 +29,15 @@ public class MuntanyaRussa {
     
     public void pujar() {
         mon.lock();
-        if (passatgers < capacitat && estat != BAIXANT) {
-            estat = PUJANT;
-        }
+
         while (estat != PUJANT) {
             poderPujar.awaitUninterruptibly();
         }
-        //System.out.println("PUJA: " + passatgers);
         passatgers = passatgers+1;
+        System.out.println("PUJA: " + passatgers);
         if (passatgers == capacitat) {
-            //System.out.println("PUJA ULTIM");
             estat = CIRCULANT;
-            //System.out.println("VAGO PLE");
+            System.out.println("VAGO PLE");
             poderCircular.signal();
         }
         mon.unlock();
@@ -51,10 +48,9 @@ public class MuntanyaRussa {
         while (estat != BAIXANT) {
             poderBaixar.awaitUninterruptibly();
         }
-        //System.out.println("BAIXA: " + passatgers);
+        System.out.println("BAIXA: " + passatgers);
         passatgers = passatgers-1;
         if (passatgers == 0) {
-            //System.out.println("BAIXA ULTIM");
             estat = PUJANT;
             poderPujar.signalAll();
         }
@@ -66,7 +62,7 @@ public class MuntanyaRussa {
         if (estat != CIRCULANT) {
             poderCircular.awaitUninterruptibly();
         }
-        //System.out.println("VAGO ESTA CIRCULANT");
+        System.out.println("VAGO ESTA CIRCULANT");
         mon.unlock();
     }
     
@@ -74,7 +70,7 @@ public class MuntanyaRussa {
         mon.lock();
         estat = BAIXANT;
         poderBaixar.signalAll();
-        //System.out.println("VAGO HA ARRIBAT");
+        System.out.println("VAGO HA ARRIBAT");
         mon.unlock();
     }
 }

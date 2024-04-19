@@ -1,7 +1,10 @@
 package practica2.Protocol;
 
 import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import practica1.CircularQ.CircularQueue;
 import util.Const;
 import util.TCPSegment;
@@ -10,22 +13,42 @@ import util.SimNet;
 public class SimNet_Monitor implements SimNet {
 
   protected CircularQueue<TCPSegment> queue;
-  //Completar
+  protected Lock mon;
+  protected Condition qFull, qFree;
 
   public SimNet_Monitor() {
     queue  = new CircularQueue<>(Const.SIMNET_QUEUE_SIZE);
-    //Completar
+    mon = new ReentrantLock();
+    qFree = mon.newCondition();
+    qFull = mon.newCondition();
   }
 
   @Override
   public void send(TCPSegment seg) {
-    throw new RuntimeException("//Completar...");
+    mon.lock();
+    try {
+        while (queue.full()) {
+            qFull.awaitUninterruptibly();
+        }
+        qFree.signalAll();
+        queue.put(seg);
+    } finally {
+        mon.unlock();
+    }
   }
 
   @Override
   public TCPSegment receive() {
-    throw new RuntimeException("//Completar...");
-  }
+    try {
+        while (queue.empty()) {
+            qFree.awaitUninterruptibly();
+        }
+        qFull.signalAll();
+        return queue.get();
+    } finally {
+        mon.unlock();
+    }
+ }
 
   @Override
   public int getMTU() {

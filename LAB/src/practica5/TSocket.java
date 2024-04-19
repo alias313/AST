@@ -90,7 +90,11 @@ public class TSocket extends TSocket_base {
   public void processReceivedSegment(TCPSegment rseg) {
     lock.lock();
     try{
-      throw new RuntimeException("//Completar...");
+      if (rseg.isPsh()) {
+          // variables de recv
+      } else if (rseg.isAck()) {
+          // variables de snd
+      }
     } finally {
       lock.unlock();
     }

@@ -8,7 +8,7 @@ import util.SimNet;
 
 public class TSocketRecv extends TSocket_base {
 
-  protected Thread thread;
+  //protected Thread thread;
   protected CircularQueue<TCPSegment> rcvQueue;
   protected int rcvSegConsumedBytes;
 
