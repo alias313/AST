@@ -27,6 +27,7 @@ public class SimNet_Monitor implements SimNet {
   public void send(TCPSegment seg) {
     mon.lock();
     try {
+      System.out.println("Sent segment: " + seg.toString());
         while (queue.full()) {
             qFull.awaitUninterruptibly();
         }

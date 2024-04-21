@@ -19,5 +19,7 @@ public class Test {
     Receiver receiver = new Receiver(new TSocketRecv(net), 1, 200);
 
     //Completar (trobar una manera que demostri que la xarxa utilitzada no funciona bé per aquest cas)
+    sender.start();
+    receiver.start();
   }
 }
