@@ -14,12 +14,12 @@ public class Test {
     
     TCPSegment.SHOW_DATA = true;
     
-    SimNet net        = new SimNet_Queue();
+    SimNet net        = new SimNet_Queue(); 
     Sender sender     = new Sender(new TSocketSend(net), 10, 1, 100);
     Receiver receiver = new Receiver(new TSocketRecv(net), 1, 200);
-
+    
     //Completar (trobar una manera que demostri que la xarxa utilitzada no funciona bé per aquest cas)
-    sender.start();
-    receiver.start();
+    sender.run();
+    receiver.run();
   }
 }
