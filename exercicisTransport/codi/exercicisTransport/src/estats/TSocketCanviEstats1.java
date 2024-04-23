@@ -104,16 +104,32 @@ public class TSocketCanviEstats1 extends TSocketCanviEstats{
         try {
             switch (estat) {
                 case ESTAT_ESP: {
-                    appCV.signal();
+                    Segment missAssumedSegment = (Segment) miss;
+                    int tipusMiss = missAssumedSegment.getTipus();
+                    if (tipusMiss == INICI) {
+                        appCV.signal();
+                    } else {
+                        System.out.println("FAILED AT ESTABLISHING CONNECTION: expected SYN (100) type header but got " + tipusMiss);
+                    }
                     break;
                 }
                 case ESTAT_ENV_INICI: {
-                    appCV.signal();
-                    break;
+                    Segment missAssumedSegment = (Segment) miss;
+                    int tipusMiss = missAssumedSegment.getTipus();
+                    if (tipusMiss == INICI_RECON) {
+                        appCV.signal();
+                    } else {
+                        System.out.println("FAILED AT ESTABLISHING CONNECTION: expected SYN (100) type header but got " + tipusMiss);
+                    }                    break;
                 }
                 case ESTAT_REB_INICI: {
-                    appCV.signal();
-                    break;
+                    Segment missAssumedSegment = (Segment) miss;
+                    int tipusMiss = missAssumedSegment.getTipus();
+                    if (tipusMiss == RECON) {
+                        appCV.signal();
+                    } else {
+                        System.out.println("FAILED AT ESTABLISHING CONNECTION: expected SYN (100) type header but got " + tipusMiss);
+                    }                    break;
                 }
             }
         }  finally {
