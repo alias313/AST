@@ -9,6 +9,9 @@ package estats;
 import java.util.concurrent.locks.Condition;
 
 import xarxa.Xarxa;
+import xarxa.Comms;
+import xarxa.Emissor;
+import xarxa.Segment;
 
 
 /**
@@ -42,29 +45,30 @@ import xarxa.Xarxa;
 
  */
 public class TSocketCanviEstats1 extends TSocketCanviEstats{
-    protected Condition esperaRebInici;
-    protected Condition esperaRebIniciRecon;
-    protected Condition esperaRebRecon;
 
     public TSocketCanviEstats1(Xarxa x)  {
         super(x);
         estat = ESTAT_TANC;
-        esperaRebInici = mon.newCondition();
-        esperaRebIniciRecon = mon.newCondition();
-        esperaRebRecon = mon.newCondition();
     }
 
    
     public void inicia(){
         mon.lock();
         try{
-            this.enviar(TSocketCanviEstats.INICI);
-            estat = TSocketCanviEstats.ESTAT_ENV_INICI;
-            while ( != INICI_RECON) {
-                esperaRebIniciRecon.awaitUninterruptibly();
-            }
-            this.enviar(TSocketCanviEstats.RECON);
-            estat = TSocketCanviEstats.;
+            // EVENT inicia, accio envia INICI, canvia a estat ESTAT_ENV_INICI
+            Segment segInici = new Segment(INICI, 1, null);
+            xarxa.enviar(segInici);
+            estat = ESTAT_ENV_INICI;
+            System.out.println("S'ha enviat el SYN");
+
+            // EVENT reb INICI_RECOM, accio envia RECON, canvia a estat ESTAT_FINAL
+            appCV.awaitUninterruptibly();
+            Segment segRecon = new Segment(RECON, 2, null);
+            xarxa.enviar(segRecon);
+            System.out.println("S'ha rebut l'ACK");
+
+            estat = TSocketCanviEstats.ESTAT_FINAL;
+
         } catch (Exception ex) { System.out.println(ex); }
         finally{
             mon.unlock();
@@ -75,18 +79,20 @@ public class TSocketCanviEstats1 extends TSocketCanviEstats{
     public void espera(){
         mon.lock();
         try{
+            // EVENT espera canvia a estat ESTAT_ESP
             estat = TSocketCanviEstats.ESTAT_ESP;
-            int estatRebut = (int) rebre();
-            while (estatRebut != INICI) {
-                esperaRebInici.await();
-            }
-            this.enviar(TSocketCanviEstats1.INICI_RECON);
+            appCV.awaitUninterruptibly();
+            System.out.println("S'ha rebut el SYN");
+            // EVENT reb INICI, accio envia INICI_RECOM, canvia a estat ESTAT_REB_INICI
+            Segment segREBInici = new Segment(INICI_RECON, 1, null);
+            xarxa.enviar(segREBInici);
             estat = TSocketCanviEstats.ESTAT_REB_INICI;
-            estatRebut = (int) rebre();
-            while (estatRebut != RECON) {
-                esperaRebRecon.awaitUninterruptibly();
-            }
+            System.out.println("S'ha enviat l'ACK");
+
+            // EVENT reb RECON, canvia a estat ESTAT_FINAL
+            appCV.awaitUninterruptibly();
             estat = ESTAT_FINAL;
+
         } catch (Exception ex) { System.out.println(ex); }
         finally{
             mon.unlock();
@@ -96,15 +102,20 @@ public class TSocketCanviEstats1 extends TSocketCanviEstats{
     public void processarMissatge(Object miss){
         mon.lock();
         try {
-            throw new RuntimeException("Part a completar");
-            
-            
-            
-            
-            
-            
-            
-            
+            switch (estat) {
+                case ESTAT_ESP: {
+                    appCV.signal();
+                    break;
+                }
+                case ESTAT_ENV_INICI: {
+                    appCV.signal();
+                    break;
+                }
+                case ESTAT_REB_INICI: {
+                    appCV.signal();
+                    break;
+                }
+            }
         }  finally {
             mon.unlock();
         }
