@@ -3,7 +3,7 @@ package practica2.P0CZ;
 public class CounterThread extends Thread {
 
     public static int x;
-    private final int I = 100000;
+    private final int I = 10000;
 
     @Override
     public void run() {
@@ -11,5 +11,6 @@ public class CounterThread extends Thread {
             x = x + 1;
             System.out.println(x);
         }
+        return;
     }
 }
