@@ -39,6 +39,7 @@ public class TSocketEnviarControlFlux extends TSocket {
             
             Segment seg = new Segment(Comms.DADES, numeroSequencia, c);
             xarxa.enviar(seg);
+            seguentEnviar++;
 
         } catch (Exception ex) {
             ex.printStackTrace();
