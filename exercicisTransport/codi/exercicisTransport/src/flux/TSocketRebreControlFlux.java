@@ -9,23 +9,23 @@ import xarxa.Xarxa;
 public class TSocketRebreControlFlux extends TSocket {
 
     protected int seguentARebre;
-    protected CircularQueue cuaRecepcio;
+    protected CircularQueue<Object> cuaRecepcio;
 
     public TSocketRebreControlFlux(Xarxa x) {
         super(x);
-        cuaRecepcio = new CircularQueue(Comms.MIDA_CUA_RECEPCIO);
+        cuaRecepcio = new CircularQueue<Object>(Comms.MIDA_CUA_RECEPCIO);
     }
 
     @Override
     public Object rebre() {
+        Object tmp;
         mon.lock();
         try {
-            throw new RuntimeException("Part a completar");
-            
-            
-            
-            
-            
+            while(cuaRecepcio.empty()){
+                appCV.awaitUninterruptibly();
+            }
+            tmp = cuaRecepcio.get();
+            return tmp;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -38,11 +38,11 @@ public class TSocketRebreControlFlux extends TSocket {
     public void processarMissatge(Segment segment) {
         mon.lock();
         try {
-            throw new RuntimeException("Part a completar");
-            
-            
-            
-            
+            cuaRecepcio.put(segment.getDades());
+            appCV.signal();
+            seguentARebre = segment.getNumSeq() + 1;                  
+            Segment seg = new Segment(Comms.ACK, seguentARebre, cuaRecepcio.free(), null);
+            xarxa.enviar(seg);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
