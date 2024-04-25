@@ -24,7 +24,7 @@ public class Receptor implements Runnable {
         while (true) {
             adormir(1000);
             Object rebut = socket.rebre();
-            System.out.println("++++++++++++Receptor: " + rebut);
+            System.out.println("\t\t\t\t\t\t ++++++++++++Receptor: " + rebut);
         }
     }
 
