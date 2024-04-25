@@ -1,0 +1,4 @@
+canal ideal, no es perden segments i arriben en ordre,
+canal de capacitat infinita.
+
+a afegir el mecanisme slow-start de control de congestio.

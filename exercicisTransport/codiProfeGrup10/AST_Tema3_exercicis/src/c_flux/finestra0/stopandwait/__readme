@@ -1,0 +1,4 @@
+canal ideal, no es perden segments i arriben en ordre.
+
+a afegir el mecanisme stop-and-wait (mecanisme de control
+de congestio amb mida de finestra = 1).

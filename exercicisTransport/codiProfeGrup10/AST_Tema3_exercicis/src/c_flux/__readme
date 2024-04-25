@@ -1,0 +1,4 @@
+canal ideal, no es perden segments i arriben en ordre.
+
+a implementar el mecanisme de control de flux, sense
+considerar el cas particular de finestra0.
