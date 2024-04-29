@@ -23,7 +23,7 @@ public class Tester extends Thread {
     
     public void run(){
         Random random = new Random();
-        int b = random.nextInt(100, 3000);
+        int b = random.nextInt(2900) + 100;
         try {
             Thread.sleep(b);
         } catch (InterruptedException ex) {
@@ -31,7 +31,7 @@ public class Tester extends Thread {
         }
         monitor.enter();
         
-        int a = random.nextInt(100, 1000);
+        int a = random.nextInt(900) + 100;
         try {
             Thread.sleep(a);
         } catch (InterruptedException ex) {

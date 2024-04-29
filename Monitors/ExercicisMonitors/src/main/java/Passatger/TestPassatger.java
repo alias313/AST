@@ -17,7 +17,6 @@ public class TestPassatger extends Thread {
         //System.out.println("numViatges: " + numViatges);
         final MuntanyaRussa monitor = new MuntanyaRussa(capacitatVago);
         ArrayList<Thread> passatgers = new ArrayList<Thread>();
-        ArrayList<Thread> vagons = new ArrayList<Thread>();
         Thread tempPassatger, tempVago;
         
         tempVago = new Thread(() -> {
