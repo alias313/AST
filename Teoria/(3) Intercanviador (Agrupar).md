@@ -46,7 +46,7 @@ public class Intercanviador {
     protected Lock mon;
     protected int arribats;
     protected Object espai;
-    protected Condition intercanviAcabat;
+    protected Condition intercanviAcabat, ego;
     
     Object intercanviador (Object elem) throws InterruptedException {
         mon.lock();
@@ -68,6 +68,7 @@ public class Intercanviador {
 			espai = elem;
 			ego.signal();
         }
+        //arribats++; // tendría que ir aqui??? 
         mon.unlock();
         return espai;
     }
