@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
 
-package edu.upc.etsetb.poo.lab.groupex;
+package groupex;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
