@@ -84,7 +84,7 @@ public class Pont {
         try {
             mon.lock();
             if (estatActual == 'c') {
-                while (cotxesEntrat != cotxesSortit) {
+                if (cotxesEntrat != cotxesSortit) {
                     System.out.println("COTXES: " + cotxesEntrat + " " + cotxesSortit);
                     canviant = true;
                     deixaSortir.await();
@@ -95,7 +95,7 @@ public class Pont {
                 System.out.println("PONT AIXECAT");
             }
             else if (estatActual == 'v') {
-                while (vaixellsEntrat != vaixellsSortit) {
+                if (vaixellsEntrat != vaixellsSortit) {
                     System.out.println("VAIXELLS: " + vaixellsEntrat + " " + vaixellsSortit);
                     canviant = true;
                     deixaSortir.await();

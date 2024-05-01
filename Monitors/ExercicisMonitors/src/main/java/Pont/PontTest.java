@@ -19,7 +19,7 @@ public class PontTest extends Thread {
                     monitor.entrar('v');
                     try {
                         Random random = new Random();
-                        Thread.sleep(random.nextInt(100));
+                        Thread.sleep(random.nextInt(200));
                     } catch (Exception ex) {
                         System.out.println(ex);
                     }
@@ -32,14 +32,14 @@ public class PontTest extends Thread {
                 monitor.entrar('c');
                 try {
                     Random random = new Random();
-                    Thread.sleep(random.nextInt(100));
+                    Thread.sleep(random.nextInt(200));
                 } catch (Exception ex) {
                     System.out.println(ex);
                 }
                 monitor.sortir('c');
             });
             cotxe.start();
-            System.out.println("FINISHED ITERATION NUMBER ----------- " + i);
+            //System.out.println("FINISHED ITERATION NUMBER ----------- " + i);
         }
         monitor.canviar();
         System.out.println("SLEEP");
