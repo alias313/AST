@@ -39,7 +39,7 @@ public class PontTest extends Thread {
                 monitor.sortir('c');
             });
             cotxe.start();
-            //System.out.println("FINISHED ITERATION NUMBER ----------- " + i);
+            System.out.println("\t\t\t\t\t FINISHED ITERATION NUMBER ----------- " + i);
         }
         monitor.canviar();
         System.out.println("SLEEP");
