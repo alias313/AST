@@ -46,7 +46,7 @@ public class Intercanviador {
     protected Lock mon;
     protected int arribats;
     protected Object espai;
-    protected Condition intercanviAcabat, ego;
+    protected Condition intercanviAcabat, sonDos;
     
     Object intercanviador (Object elem) throws InterruptedException {
         mon.lock();
@@ -55,10 +55,10 @@ public class Intercanviador {
         while (arribats == 2) {
             intercanviAcabat.await();
         }
+        arribats++;
         if (arribats == 1) {
-	        arribats++;
 			espai = elem;
-			ego.await();
+			sonDos.await();
 			tmp = espai;
 			arribats = 0; // L'ultim que marxa es el primer
 			intercanviAcabat.signal();
@@ -66,9 +66,9 @@ public class Intercanviador {
         } else {
 			tmp = espai;
 			espai = elem;
-			ego.signal();
+			sonDos.signal();
         }
-        //arribats++; // tendría que ir aqui??? 
+
         mon.unlock();
         return espai;
     }
