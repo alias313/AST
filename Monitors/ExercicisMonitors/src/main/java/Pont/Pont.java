@@ -8,7 +8,7 @@ public class Pont {
     protected Lock mon;
     protected Condition cotxePassa, vaixellPassa, deixaSortir;
     protected char estatActual; // 'v' es obert/aixecat (passen vaixells), 'c' es tancat/abaixat (passen cotxes)
-    protected int cotxesEntrat, cotxesSortit, vaixellsEntrat, vaixellsSortit;
+    protected int vehiclesEnTransit;
     protected boolean canviant;
 
     public Pont(char estatInicial) {
@@ -33,12 +33,11 @@ public class Pont {
                     // throw some exception
                 }
             }
+            vehiclesEnTransit++;
             if (tipus == 'c') {
-                cotxesEntrat++;
                 System.out.println("COTXE ENTRA");
             }
             else if (tipus == 'v') {
-                vaixellsEntrat++;
                 System.out.println("VAIXELL ENTRA");
             }
             else {
@@ -55,18 +54,14 @@ public class Pont {
     public void sortir(char tipus) {
         try {
             mon.lock();
+            vehiclesEnTransit--;
+
+            if (canviant && vehiclesEnTransit == 0) deixaSortir.signal();
+            
             if (tipus == 'c') {
-                cotxesSortit++;
-                if (canviant && cotxesEntrat == cotxesSortit) {
-                    deixaSortir.signal();
-                }
                 System.out.println("COTXE SURT");
             }
             else if (tipus == 'v') {
-                vaixellsSortit++;
-                if (canviant && vaixellsEntrat == vaixellsSortit) {
-                    deixaSortir.signal();
-                }
                 System.out.println("VAIXELL SURT");
             }
             else {
@@ -84,8 +79,8 @@ public class Pont {
         try {
             mon.lock();
             if (estatActual == 'c') {
-                if (cotxesEntrat != cotxesSortit) {
-                    System.out.println("COTXES: " + cotxesEntrat + " " + cotxesSortit);
+                if (vehiclesEnTransit != 0) {
+                    System.out.println("COTXES per sortir: " + vehiclesEnTransit);
                     canviant = true;
                     deixaSortir.await();
                 }
@@ -95,8 +90,8 @@ public class Pont {
                 System.out.println("PONT AIXECAT");
             }
             else if (estatActual == 'v') {
-                if (vaixellsEntrat != vaixellsSortit) {
-                    System.out.println("VAIXELLS: " + vaixellsEntrat + " " + vaixellsSortit);
+                if (vehiclesEnTransit != 0) {
+                    System.out.println("VAIXELLS per sortir: " + vehiclesEnTransit);
                     canviant = true;
                     deixaSortir.await();
                 }
