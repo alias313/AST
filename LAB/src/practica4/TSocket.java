@@ -8,11 +8,11 @@ import util.TSocket_base;
 public class TSocket extends TSocket_base {
 
   //sender variable:
-  protected int MSS;
+  protected int MSS, rcvNext;
 
   //receiver variables:
   protected CircularQueue<TCPSegment> rcvQueue;
-  protected int rcvSegConsumedBytes;
+  protected int rcvSegConsumedBytes, segmentNumber;
 
   protected TSocket(Protocol p, int localPort, int remotePort) {
     super(p.getNetwork());
@@ -26,18 +26,42 @@ public class TSocket extends TSocket_base {
 
   @Override
   public void sendData(byte[] data, int offset, int length) {
-    throw new RuntimeException("//Completar...");
+    TCPSegment segment = new TCPSegment();
+    segmentNumber = 0;
+    while (length > MSS) {
+      segment = segmentize(data, offset + segmentNumber*MSS, MSS);
+      segment.setSourcePort(localPort);
+      segment.setDestinationPort(remotePort);  
+      network.send(segment);
+      length = length - MSS;
+      segmentNumber++;
+    }
+    segment = segmentize(data, offset + segmentNumber*MSS, length);
+    segment.setSourcePort(localPort);
+    segment.setDestinationPort(remotePort);  
+    network.send(segment);
   }
 
   protected TCPSegment segmentize(byte[] data, int offset, int length) {
-    throw new RuntimeException("//Completar...");
+    TCPSegment seg = new TCPSegment();
+    seg.setPsh(true);
+    seg.setSeqNum(segmentNumber);
+    seg.setData(data, offset, length);
+    return seg;
   }
 
   @Override
   public int receiveData(byte[] buf, int offset, int length) {
     lock.lock();
     try {
-      throw new RuntimeException("//Completar...");
+      int bytesConsumed = 0;
+      while (rcvQueue.empty()) {
+        appCV.awaitUninterruptibly();
+      }
+      while (bytesConsumed < length && !rcvQueue.empty()) {
+        bytesConsumed += consumeSegment(buf, offset+bytesConsumed, length-bytesConsumed);
+      }
+      return bytesConsumed;
     } finally {
       lock.unlock();
     }
@@ -56,7 +80,13 @@ public class TSocket extends TSocket_base {
   }
 
   protected void sendAck() {
-    throw new RuntimeException("//Completar...");
+    TCPSegment seg = new TCPSegment();
+    seg.setSourcePort(localPort);
+    seg.setDestinationPort(remotePort);
+    seg.setAck(true);
+    seg.setAckNum(rcvNext);
+    seg.setWnd(rcvQueue.free());
+    network.send(seg);
   }
 
   @Override
@@ -65,9 +95,13 @@ public class TSocket extends TSocket_base {
     lock.lock();
     try {     
       if (rseg.isAck()){
-        //nothing to be done in this exercise.
+        //nothing to be done in this case.
+      } else {
+        rcvQueue.put(rseg);
+        appCV.signal();
+        rcvNext = rseg.getSeqNum() + 1;
+        sendAck();
       }
-      throw new RuntimeException("//Completar...");
     } finally {
       lock.unlock();
     }
