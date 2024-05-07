@@ -1,5 +1,9 @@
 package practica3;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import practica1.CircularQ.CircularQueue;
 import util.Const;
 import util.TCPSegment;
@@ -10,12 +14,11 @@ public class TSocketRecv extends TSocket_base {
 
   //protected Thread thread;
   protected CircularQueue<TCPSegment> rcvQueue;
-  protected int rcvSegConsumedBytes;
+  protected int rcvSegConsumedBytes, rcvNext;
 
   public TSocketRecv(SimNet network) {
     super(network);
     rcvQueue = new CircularQueue<>(Const.RCV_QUEUE_SIZE);
-    rcvSegConsumedBytes = 0;
     new ReceiverTask().start();
   }
 
@@ -23,7 +26,14 @@ public class TSocketRecv extends TSocket_base {
   public int receiveData(byte[] buf, int offset, int length) {
     lock.lock();
     try {
-      throw new RuntimeException("//Completar...");
+      int bytesConsumed = 0;
+      while (rcvQueue.empty()) {
+        appCV.awaitUninterruptibly();
+      }
+      while (bytesConsumed < length && !rcvQueue.empty()) {
+        bytesConsumed += consumeSegment(buf, offset+bytesConsumed, length-bytesConsumed);
+      }
+      return bytesConsumed;
     } finally {
       lock.unlock();
     }
@@ -42,12 +52,24 @@ public class TSocketRecv extends TSocket_base {
   }
 
   @Override
-  public void processReceivedSegment(TCPSegment rseg) {  
+  public void processReceivedSegment(TCPSegment rseg) {
     lock.lock();
     try {
-      throw new RuntimeException("//Completar...");
-    } finally {
-      lock.unlock();
+      //System.out.println("PROCESS" + rseg.toString());
+      if (!rcvQueue.full()) {
+        rcvQueue.put(rseg);
+        this.printRcvSeg(rseg);
+        appCV.signal();
+        //rcvNext = rseg.getSeqNum() + 1;
+      }
+
+/*       TCPSegment tseg = new TCPSegment();
+      tseg.setAck(true);
+      tseg.setAckNum(rcvNext);
+      tseg.setWnd(rcvQueue.free());
+      network.send(tseg);
+ */    } finally {
+        lock.unlock();
     }
   }
 

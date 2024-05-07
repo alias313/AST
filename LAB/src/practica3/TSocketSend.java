@@ -36,7 +36,7 @@ public class TSocketSend extends TSocket_base {
     // es una red simulada
     TCPSegment seg = new TCPSegment();
     seg.setPsh(true);
-    seg.setSeqNum(segmentNumber);
+    //seg.setSeqNum(segmentNumber);
     seg.setData(data, offset, length);
     return seg;
   }

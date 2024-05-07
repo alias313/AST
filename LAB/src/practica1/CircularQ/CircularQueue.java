@@ -7,7 +7,7 @@ public class CircularQueue<E> implements Queue<E> {
 
     private final E[] queue;
     private final int N;
-    private int primer, ultim, numElems;
+    private int numElem, head, tail;
 
     public CircularQueue(int N) {
         this.N = N;
@@ -16,99 +16,118 @@ public class CircularQueue<E> implements Queue<E> {
 
     @Override
     public int size() {
-        return numElems;
+        return numElem;
     }
 
     @Override
     public int free() {
-        return N - numElems;
+        return N - numElem;
     }
 
     @Override
     public boolean empty() {
-        if (numElems == 0) return true;
-        return false;
+        return numElem == 0;
     }
 
     @Override
     public boolean full() {
-        if (numElems == N) return true;
-        return false;
+        return numElem == N;
     }
 
     @Override
     public E peekFirst() {
-        return queue[primer];
+        if (numElem == 0) {
+            return null;
+        }
+        return queue[head];
     }
 
     @Override
     public E get() {
-        if (empty()) return null;
-        E resultat = queue[primer];
-        queue[primer] = null;
-        primer = (primer + 1) % N;
-        if (primer == ultim) {
-            ultim = (ultim - 1) % N;
+        if (numElem == 0) {
+            throw new IllegalStateException("Empty queue.");
         }
-        numElems--;
-        return resultat;
+        E e = queue[head];
+        head = (head + 1) % N;
+        numElem = numElem - 1;
+        return e;
     }
 
     @Override
     public void put(E e) {
-        queue[ultim] = e;
-        ultim = (ultim + 1) % N;
-        numElems++;
+        if (numElem == N) {
+            throw new IllegalStateException("Full queue.");
+        }
+        queue[tail] = e;
+        tail = (tail + 1) % N;
+        numElem = numElem + 1;
+    }
+
+    public int get(E[] e, int offset, int length) {
+        int i = 0;
+        for (; i < length && numElem > 0; i++) {
+            e[offset + i] = get();
+        }
+        return i;
+    }
+
+    public int put(E[] e, int offset, int length) {
+        int i = 0;
+        for (; i < length && numElem < N; i++) {
+            put(e[offset + i]);
+        }
+        return i;
     }
 
     @Override
     public String toString() {
-        String queueString = new String();
-        for (int i = 0; i < N; i++) {
-            if (queue[i] != null) {
-                queueString += queue[i].toString();
-                queueString += ", ";
-            }
-            else {
-                queueString += "null, ";
-            }
+        if (numElem == 0) {
+            return "[]";
         }
-        
-        return queueString;
+        String str = "[";
+        for (int i = 0; i < numElem - 1; i++) {
+            str = str + queue[(head + i) % N] + ",";
+        }
+        str = str + queue[(head + numElem - 1) % N] + "]";
+        return str;
     }
-
-    @Override
+    
     public Iterator<E> iterator() {
         return new MyIterator();
     }
 
-    class MyIterator implements Iterator {
-        int currentIndex = primer;
+    class MyIterator implements Iterator<E> {
+
+        int index = 0;
 
         @Override
         public boolean hasNext() {
-            if (full()) return true;
-            return !(currentIndex == ultim);
+            return index < numElem;
         }
 
         @Override
         public E next() {
-            E resultat = queue[currentIndex];
-            currentIndex = (currentIndex + 1) % N;
-            return resultat;
+          if(index==numElem){
+            throw new IllegalStateException("no next element");
+          }
+          E tmp = queue[(head+index) % N];
+          index++;
+          return tmp;
         }
-        
+
         @Override
         public void remove() {
-            int itemsLeft;
-            currentIndex = (currentIndex - 1 + N) % N;
-            for (int i = 0; i < primer+numElems-currentIndex-1; i++) {
-                queue[(currentIndex+i)%N] = queue[(currentIndex+i+1)%N];
-            }
-            ultim = ( ultim - 1 + N ) % N;
-            queue[ultim] = null;
-            numElems--;
+          if(index<0){
+            throw new IllegalStateException("no remove possible");
+          }
+          index--;
+          for (int i = index; i < numElem; i++) {
+            queue[(head+i) % N] = queue[(head+1+i) % N];
+          }
+          tail = tail - 1;
+          if (tail == -1 ){tail = N - 1;}
+          numElem--;
         }
-        
+
     }
 }

@@ -41,6 +41,7 @@ public class SimNet_Monitor implements SimNet {
   @Override
   public TCPSegment receive() {
     try {
+        mon.lock();
         while (queue.empty()) {
             qFree.awaitUninterruptibly();
         }

@@ -19,10 +19,14 @@ public class SimNet_Loss extends practica2.Protocol.SimNet_Monitor {
 
   @Override
   public void send(TCPSegment seg) {
-    if (rand.nextDouble() > lossRate) {
-        //super.send(seg);
+    try {
+      mon.lock();
+      if (rand.nextDouble() > lossRate) {
+        super.send(seg);
+      }
+    } finally {
+      mon.unlock();
     }
-    super.send(seg);
   }
 
   @Override
