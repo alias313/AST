@@ -26,12 +26,10 @@ public class Protocol extends Protocol_base {
                 if (s.localPort == localPort && s.remotePort == remotePort) {
                     return s;
                 }
-
-                return null;
             }
+            return null;
         } finally {
             lk.unlock();
         }
-        return null;
     }
 }

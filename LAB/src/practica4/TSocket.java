@@ -26,20 +26,34 @@ public class TSocket extends TSocket_base {
 
   @Override
   public void sendData(byte[] data, int offset, int length) {
-    TCPSegment segment = new TCPSegment();
+    TCPSegment sndSegment = new TCPSegment();
     segmentNumber = 0;
     while (length > MSS) {
-      segment = segmentize(data, offset + segmentNumber*MSS, MSS);
-      segment.setSourcePort(localPort);
-      segment.setDestinationPort(remotePort);  
-      network.send(segment);
+      sndSegment = segmentize(data, offset + segmentNumber*MSS, MSS);
+      sndSegment.setSourcePort(localPort);
+      sndSegment.setDestinationPort(remotePort);  
+      network.send(sndSegment);
       length = length - MSS;
       segmentNumber++;
     }
-    segment = segmentize(data, offset + segmentNumber*MSS, length);
-    segment.setSourcePort(localPort);
-    segment.setDestinationPort(remotePort);  
-    network.send(segment);
+    sndSegment = segmentize(data, offset + segmentNumber*MSS, length);
+    sndSegment.setSourcePort(localPort);
+    sndSegment.setDestinationPort(remotePort);  
+    network.send(sndSegment);
+
+/*     int minLength;
+    while (length > 0) {
+        minLength = Math.min(MSS, length);
+        sndSegment = segmentize(data, offset, minLength);
+        sndSegment.setSourcePort(localPort);
+        sndSegment.setDestinationPort(remotePort);    
+        network.send(sndSegment);
+        
+        this.printSndSeg(sndSegment);
+        offset += minLength;
+        length -= minLength;
+    }
+ */
   }
 
   protected TCPSegment segmentize(byte[] data, int offset, int length) {
@@ -93,10 +107,12 @@ public class TSocket extends TSocket_base {
   public void processReceivedSegment(TCPSegment rseg) {
 
     lock.lock();
-    try {     
+    try {
       if (rseg.isAck()){
         //nothing to be done in this case.
+        printRcvSeg(rseg);
       } else {
+        printRcvSeg(rseg);
         rcvQueue.put(rseg);
         appCV.signal();
         rcvNext = rseg.getSeqNum() + 1;
