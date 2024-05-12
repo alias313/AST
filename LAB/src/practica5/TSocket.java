@@ -1,5 +1,7 @@
 package practica5;
 
+import javax.swing.text.Segment;
+
 import practica1.CircularQ.CircularQueue;
 import practica4.Protocol;
 import util.Const;
@@ -38,14 +40,28 @@ public class TSocket extends TSocket_base {
   public void sendData(byte[] data, int offset, int length) {
     lock.lock();
     try {
-      throw new RuntimeException("//Completar...");
-    } finally {
+      int sent = 0;
+      while (length > sent) {
+        int to_send = Math.min(length - sent, MSS);
+        TCPSegment sndSegment = segmentize(data, offset + sent, to_send);
+        sndSegment.setSourcePort(localPort);
+        sndSegment.setDestinationPort(remotePort);  
+        network.send(sndSegment);
+        snd_sndNxt++;
+        appCV.awaitUninterruptibly();
+        sent += to_send;
+      }
+      } finally {
       lock.unlock();
     }
   }
 
   protected TCPSegment segmentize(byte[] data, int offset, int length) {
-    throw new RuntimeException("//Completar...");
+    TCPSegment seg = new TCPSegment();
+    seg.setPsh(true);
+    seg.setSeqNum(snd_sndNxt);
+    seg.setData(data, offset, length);
+    return seg;
   }
 
   @Override
@@ -63,7 +79,14 @@ public class TSocket extends TSocket_base {
   public int receiveData(byte[] buf, int offset, int maxlen) {
     lock.lock();
     try {
-      throw new RuntimeException("//Completar...");
+      int bytesConsumed = 0;
+      while (rcv_Queue.empty()) {
+        appCV.awaitUninterruptibly();
+      }
+      while (bytesConsumed < maxlen && !rcv_Queue.empty()) {
+        bytesConsumed += consumeSegment(buf, offset+bytesConsumed, maxlen-bytesConsumed);
+      }
+      return bytesConsumed;
     } finally {
       lock.unlock();
     }
@@ -82,7 +105,13 @@ public class TSocket extends TSocket_base {
   }
 
   protected void sendAck() {
-    throw new RuntimeException("//Completar...");
+    TCPSegment seg = new TCPSegment();
+    seg.setSourcePort(localPort);
+    seg.setDestinationPort(remotePort);
+    seg.setAck(true);
+    seg.setAckNum(rcv_rcvNxt);
+    seg.setWnd(rcv_Queue.free());
+    network.send(seg);
   }
 
   // -------------  SEGMENT ARRIVAL  -------------
@@ -92,8 +121,15 @@ public class TSocket extends TSocket_base {
     try{
       if (rseg.isPsh()) {
           // variables de recv
+          printRcvSeg(rseg);
+          rcv_Queue.put(rseg);
+          appCV.signal();
+          rcv_rcvNxt = rseg.getSeqNum() + 1;
+          sendAck();  
       } else if (rseg.isAck()) {
           // variables de snd
+          printRcvSeg(rseg);
+          appCV.signal();
       }
     } finally {
       lock.unlock();
