@@ -105,7 +105,6 @@ public class TSocket extends TSocket_base {
 
   @Override
   public void processReceivedSegment(TCPSegment rseg) {
-
     lock.lock();
     try {
       if (rseg.isAck()){
