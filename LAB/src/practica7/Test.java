@@ -45,6 +45,7 @@ class HostSrv implements Runnable {
     }
 
     public void run() {
+      //sc.connect();
       log.printBLUE("\t\t\t\t\t\t\tWorker providing service to client with port: " + sc.remotePort);
       try {
         Thread.sleep(5000);

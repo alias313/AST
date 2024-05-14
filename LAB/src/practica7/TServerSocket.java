@@ -1,5 +1,7 @@
 package practica7;
 
+import java.util.HashMap;
+
 import practica1.CircularQ.CircularQueue;
 import util.Const;
 import util.TCPSegment;
@@ -55,7 +57,7 @@ public class TServerSocket extends TSocket_base {
 
   protected Protocol proto;
 
-  protected int state;
+  protected int state, dispatchSocketsCreated;
   protected CircularQueue<TSocket> acceptQueue;
 
   // States of FSM:
@@ -115,11 +117,13 @@ public class TServerSocket extends TSocket_base {
       switch (state) {
         case LISTEN: {
           if (rseg.isSyn()) {
-            TSocket dispatchSocket= new TSocket(proto, localPort, rseg.getSourcePort());
+            dispatchSocketsCreated += 1;
+            TSocket dispatchSocket = new TSocket(proto, localPort+dispatchSocketsCreated, rseg.getSourcePort());
+            proto.dispatchSockets.put(dispatchSocket.getRemotePort(), dispatchSocket.getLocalPort());
             acceptQueue.put(dispatchSocket);
-            appCV.signal();
             sendSYN(localPort, rseg.getSourcePort());
-            state = ESTABLISHED;
+            // thread continues from accept method
+            appCV.signal();
           }
           break;
         }
@@ -145,8 +149,10 @@ public class TServerSocket extends TSocket_base {
     network.send(seg);
   }
 
-  private void sendSYN_ACK(int numSeq, int numAck){
+  private void sendSYN_ACK(int localPort, int remotePort, int numSeq, int numAck){
     TCPSegment seg = new TCPSegment();
+    seg.setSourcePort(localPort);
+    seg.setDestinationPort(remotePort);
     seg.setSyn(true);
     seg.setAck(true);
     seg.setSeqNum(numSeq);
@@ -154,25 +160,30 @@ public class TServerSocket extends TSocket_base {
     network.send(seg);
   }
   
-  private void sendACK(int numACK){
+  private void sendACK(int localPort, int remotePort, int numACK){
     TCPSegment seg = new TCPSegment();
+    seg.setSourcePort(localPort);
+    seg.setDestinationPort(remotePort);
     seg.setAck(true);
     seg.setAckNum(numACK);
     network.send(seg);
   }
   
-  private void sendPSH(int numSeq, byte[] data, int offset, int length){
+  private void sendPSH(int localPort, int remotePort, int numSeq, byte[] data, int offset, int length){
     TCPSegment seg = new TCPSegment();
+    seg.setSourcePort(localPort);
+    seg.setDestinationPort(remotePort);
     seg.setPsh(true);
     seg.setSeqNum(numSeq);
     seg.setData(data, offset, length);
     network.send(seg);
   }
   
-  private void sendFIN(int numSeq){
+  private void sendFIN(int localPort, int remotePort){
     TCPSegment seg = new TCPSegment();
     seg.setFin(true);
-    seg.setSeqNum(numSeq);
+    seg.setSourcePort(localPort);
+    seg.setDestinationPort(remotePort);
     network.send(seg);
   }
 

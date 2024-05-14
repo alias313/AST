@@ -1,11 +1,14 @@
 package practica7;
 
+import java.util.HashMap;
+
 import util.Protocol_base;
 import util.TCPSegment;
 import util.SimNet;
 import util.TSocket_base;
 
 public class Protocol extends Protocol_base {
+  protected HashMap<Integer, Integer> dispatchSockets = new HashMap<>();
 
   protected Protocol(SimNet network) {
     super(network);
