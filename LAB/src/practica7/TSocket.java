@@ -79,7 +79,13 @@ public class TSocket extends TSocket_base {
   public void connect() {
     lock.lock();
     try {
-      throw new RuntimeException("//Completar...");
+      System.out.println("enviat : SYN");
+      
+      sendSYN(localPort, remotePort);
+      state = SYN_SENT;
+      while (state != ESTABLISHED) {
+        appCV.awaitUninterruptibly();
+      }
     } finally {
       lock.unlock();
     }
@@ -115,7 +121,9 @@ public class TSocket extends TSocket_base {
 
         case SYN_SENT: {
           if (rseg.isSyn()) {
-            throw new RuntimeException("//Completar...");
+            state = ESTABLISHED;
+            System.out.println("Establised connection on local port " + localPort);
+            appCV.signal();
           }
           break;
         }
@@ -151,4 +159,42 @@ public class TSocket extends TSocket_base {
     log.printBLACK("    sent: " + rseg);
   }
 
+  private void sendSYN(int localPort, int remotePort){
+    TCPSegment seg = new TCPSegment();
+    seg.setSourcePort(localPort);
+    seg.setDestinationPort(remotePort);
+    seg.setSyn(true);
+    network.send(seg);
+  }
+  
+  private void sendSYN_ACK(int numSeq, int numAck){
+    TCPSegment seg = new TCPSegment();
+    seg.setSyn(true);
+    seg.setAck(true);
+    seg.setSeqNum(numSeq);
+    seg.setAckNum(numAck);
+    network.send(seg);
+  }
+  
+  private void sendACK(int numACK){
+    TCPSegment seg = new TCPSegment();
+    seg.setAck(true);
+    seg.setAckNum(numACK);
+    network.send(seg);
+  }
+  
+  private void sendPSH(int numSeq, byte[] data, int offset, int length){
+    TCPSegment seg = new TCPSegment();
+    seg.setPsh(true);
+    seg.setSeqNum(numSeq);
+    seg.setData(data, offset, length);
+    network.send(seg);
+  }
+  
+  private void sendFIN(int numSeq){
+    TCPSegment seg = new TCPSegment();
+    seg.setFin(true);
+    seg.setSeqNum(numSeq);
+    network.send(seg);
+  }
 }
