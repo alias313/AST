@@ -99,7 +99,8 @@ public class TServerSocket extends TSocket_base {
       while (acceptQueue.empty()) {
         appCV.awaitUninterruptibly();
       }
-      return acceptQueue.get();
+      sc = acceptQueue.get();
+      return sc;
     } finally {
       lock.unlock();
     }
