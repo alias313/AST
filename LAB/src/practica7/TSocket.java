@@ -57,6 +57,7 @@ public class TSocket extends TSocket_base {
 
   protected int state;
   protected CircularQueue<TSocket> acceptQueue;
+  protected boolean isWorker;
 
   // States of FSM:
   protected final static int  CLOSED      = 0,
@@ -78,7 +79,7 @@ public class TSocket extends TSocket_base {
   @Override
   public void connect() {
     lock.lock();
-    try {      
+    try {
       sendSYN(localPort, remotePort);
       state = SYN_SENT;
       while (state != ESTABLISHED) {
@@ -93,11 +94,12 @@ public class TSocket extends TSocket_base {
   public void close() {
     lock.lock();
     try {
-      System.out.print("state: " + state + " ");
-      System.out.println("localport: " + localPort);
+      if (state == CLOSED) {
+        isWorker = true;
+        appCV.awaitUninterruptibly();
+      }
       switch (state) {
         case ESTABLISHED:
-          //int remoteAssignedPort = proto.dispatchSockets.get(localPort);
           sendFIN(localPort, remotePort);
           state = FIN_WAIT;
           while (state != CLOSED) {
@@ -105,7 +107,8 @@ public class TSocket extends TSocket_base {
           }
           break;
         case CLOSE_WAIT: {
-          sendFIN(localPort, remotePort);
+          if (isWorker) sendFIN(80, remotePort);
+          else sendFIN(localPort, remotePort);
           state = CLOSED;
           break;
         }
@@ -125,7 +128,10 @@ public class TSocket extends TSocket_base {
     try {
 
       printRcvSeg(rseg);
-      System.out.println(localPort);
+      // dispatched socket does not initiate connection on test
+      if (state == CLOSED) { 
+        state = ESTABLISHED;
+      }
 
       switch (state) {
 
@@ -136,10 +142,10 @@ public class TSocket extends TSocket_base {
           }
           break;
         }
-        
         case ESTABLISHED:
           if (rseg.isFin()) {
             state = CLOSE_WAIT;
+            appCV.signal();
           }
           break;
         case FIN_WAIT:
