@@ -57,9 +57,8 @@ public class TServerSocket extends TSocket_base {
 
   protected Protocol proto;
 
-  protected int state, dispatchSocketsCreated;
+  protected int state;
   protected CircularQueue<TSocket> acceptQueue;
-  protected HashMap<Integer, TSocket> dispatchSockets = new HashMap<>();
 
 
   // States of FSM:
@@ -120,15 +119,12 @@ public class TServerSocket extends TSocket_base {
       switch (state) {
         case LISTEN: {
           if (rseg.isSyn()) {
-            dispatchSocketsCreated += 1;
-            TSocket dispatchSocket = new TSocket(proto, localPort+dispatchSocketsCreated, rseg.getSourcePort());
-            dispatchSockets.put(dispatchSocket.getRemotePort(), dispatchSocket);
+            TSocket dispatchSocket = new TSocket(proto, localPort, rseg.getSourcePort());
             acceptQueue.put(dispatchSocket);
-            sendSYN(localPort, rseg.getSourcePort());
+            dispatchSocket.sendSYN();
+            dispatchSocket.state = ESTABLISHED;
             // thread continues from accept method
             appCV.signal();
-          } else {
-            dispatchSockets.get(rseg.getSourcePort()).processReceivedSegment(rseg);
           }
           break;
         }

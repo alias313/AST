@@ -17,7 +17,10 @@ public class Protocol extends Protocol_base {
     TSocket_base socketOut = getMatchingTSocket(segment.getDestinationPort(), segment.getSourcePort());
 
     if (socketOut != null) {
+      activeSockets.add(socketOut);
       socketOut.processReceivedSegment(segment);
+    } else {
+      System.out.println("Couldn't find socket to send segment");
     }
 }
 

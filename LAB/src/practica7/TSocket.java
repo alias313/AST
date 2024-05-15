@@ -57,7 +57,6 @@ public class TSocket extends TSocket_base {
 
   protected int state;
   protected CircularQueue<TSocket> acceptQueue;
-  protected boolean isWorker;
 
   // States of FSM:
   protected final static int  CLOSED      = 0,
@@ -80,7 +79,7 @@ public class TSocket extends TSocket_base {
   public void connect() {
     lock.lock();
     try {
-      sendSYN(localPort, remotePort);
+      sendSYN();
       state = SYN_SENT;
       while (state != ESTABLISHED) {
         appCV.awaitUninterruptibly();
@@ -94,21 +93,16 @@ public class TSocket extends TSocket_base {
   public void close() {
     lock.lock();
     try {
-      if (state == CLOSED) {
-        isWorker = true;
-        appCV.awaitUninterruptibly();
-      }
       switch (state) {
         case ESTABLISHED:
-          sendFIN(localPort, remotePort);
+          sendFIN();
           state = FIN_WAIT;
           while (state != CLOSED) {
             appCV.awaitUninterruptibly();
           }
           break;
         case CLOSE_WAIT: {
-          if (isWorker) sendFIN(80, remotePort);
-          else sendFIN(localPort, remotePort);
+          sendFIN();
           state = CLOSED;
           break;
         }
@@ -128,10 +122,6 @@ public class TSocket extends TSocket_base {
     try {
 
       printRcvSeg(rseg);
-      // dispatched socket does not initiate connection on test
-      if (state == CLOSED) { 
-        state = ESTABLISHED;
-      }
 
       switch (state) {
 
@@ -183,7 +173,7 @@ public class TSocket extends TSocket_base {
     log.printBLACK("    sent: " + rseg);
   }
 
-  private void sendSYN(int localPort, int remotePort){
+  public void sendSYN(){
     TCPSegment seg = new TCPSegment();
     seg.setSourcePort(localPort);
     seg.setDestinationPort(remotePort);
@@ -191,7 +181,7 @@ public class TSocket extends TSocket_base {
     network.send(seg);
   }
   
-  private void sendSYN_ACK(int localPort, int remotePort, int numSeq, int numAck){
+  public void sendSYN_ACK(int numSeq, int numAck){
     TCPSegment seg = new TCPSegment();
     seg.setSourcePort(localPort);
     seg.setDestinationPort(remotePort);
@@ -202,7 +192,7 @@ public class TSocket extends TSocket_base {
     network.send(seg);
   }
   
-  private void sendACK(int localPort, int remotePort, int numACK){
+  public void sendACK(int numACK){
     TCPSegment seg = new TCPSegment();
     seg.setSourcePort(localPort);
     seg.setDestinationPort(remotePort);
@@ -211,7 +201,7 @@ public class TSocket extends TSocket_base {
     network.send(seg);
   }
   
-  private void sendPSH(int localPort, int remotePort, int numSeq, byte[] data, int offset, int length){
+  public void sendPSH(int numSeq, byte[] data, int offset, int length){
     TCPSegment seg = new TCPSegment();
     seg.setSourcePort(localPort);
     seg.setDestinationPort(remotePort);
@@ -221,7 +211,7 @@ public class TSocket extends TSocket_base {
     network.send(seg);
   }
   
-  private void sendFIN(int localPort, int remotePort){
+  public void sendFIN(){
     TCPSegment seg = new TCPSegment();
     seg.setFin(true);
     seg.setSourcePort(localPort);
