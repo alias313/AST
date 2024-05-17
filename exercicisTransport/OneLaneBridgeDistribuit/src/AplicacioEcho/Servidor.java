@@ -9,6 +9,9 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.SSLServerSocket;
@@ -18,14 +21,18 @@ import javax.net.ssl.SSLServerSocket;
  * @author usuari.aula
  */
 public class Servidor {
+    protected boolean sentitActual;
+    protected int cotxesSentitContrariEsperant, cotxesSentitActualEsperant;
+    protected int cotxesEnTransit;
+    protected Lock mon = new ReentrantLock();
+    protected Condition sentitContrariPotPassar, sentitActualPotPassar = mon.newCondition();
 
     public static void main(String[] args) {
         ServidorEcho echo = new ServidorEcho(Comms.PORT_SERVIDOR);
         System.out.println("Servidor Eco Escoltant ... Port : "+Comms.PORT_SERVIDOR + "\n");
         new Thread(echo).start();
         
-    }
-    
+    }    
 }
 
 class ServidorEcho implements Runnable{
@@ -55,9 +62,10 @@ class ServidorEcho implements Runnable{
     }
 }
 
-class Worker implements Runnable {
+class Worker extends Servidor implements Runnable {
     protected AstSocket socket;
     protected ArrayList<AstSocket> listaSockets;
+    protected boolean sentitCotxe, validRebut;
 
     public Worker(AstSocket s, ArrayList<AstSocket> list) {
         socket = s;
@@ -66,11 +74,76 @@ class Worker implements Runnable {
 
     public void run() {
         String rebut = socket.rebre(); //semantica bloquejant
-        while (!rebut.equals("exit")) {
+
+        switch (rebut) {
+            case "north":
+                validRebut = true;
+                sentitCotxe = true;
+                break;
+            
+            case "south":
+                validRebut = true;
+                sentitCotxe = false;
+                break;
+
+            default:
+                break;
+        }
+        
+    while (!rebut.equals("exit") && validRebut) {
             // deja pasar si el sentido del coche es el mismo que el actual
             // el momento que viene un coche del sentido contrario se espera
             // y cuando se vacie el sentido actual cambia y continua la lógica
+
+            // El mismo thread solo indica el sentido la primera vez que se llamas
+            // porque las siguientes por fuerza es el contrario del anterior
+            this.entrar(); // blockejant
+            this.sortir(rebut);
+        }
+    }
+
+    public void entrar() {
+        try {
+            mon.lock();
+            if (cotxesEnTransit == 0 && cotxesSentitContrariEsperant == 0) {
+                sentitActual = sentitCotxe;
+            }
+            while (cotxesSentitContrariEsperant > 0) {
+                cotxesSentitActualEsperant++;
+                sentitActualPotPassar.awaitUninterruptibly();
+                cotxesSentitActualEsperant--;
+            }
+
+            while (sentitActual != sentitCotxe) {
+                cotxesSentitContrariEsperant++;
+                sentitContrariPotPassar.awaitUninterruptibly();
+                cotxesSentitContrariEsperant--;
+                if (cotxesSentitContrariEsperant == 0) {
+                    sentitActualPotPassar.signalAll();
+                }
+            }
+
+            cotxesEnTransit++;
+            System.out.println("ENTRA sentit " + sentitCotxe);
+        } catch (Exception ex) {
+            System.out.println(ex);
+        } finally {
+            mon.unlock();
+        }
+    }
+
+    public void sortir(String rebut) {
+        try {
+            mon.lock();
+            cotxesEnTransit--;
+            if (cotxesEnTransit == 0 && cotxesSentitContrariEsperant > 0) {
+                sentitActual = !sentitActual;
+                sentitContrariPotPassar.signalAll();
+            }
+            System.out.println("SURT sentit " + sentitCotxe);
             socket.enviar(rebut);
+        } finally {
+            mon.unlock();
         }
     }
 }
