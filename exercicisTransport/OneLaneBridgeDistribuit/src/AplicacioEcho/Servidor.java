@@ -18,7 +18,6 @@ import javax.net.ssl.SSLServerSocket;
  * @author usuari.aula
  */
 public class Servidor {
-    protected boolean sentitActual;
 
     public static void main(String[] args) {
         ServidorEcho echo = new ServidorEcho(Comms.PORT_SERVIDOR);
@@ -31,6 +30,7 @@ public class Servidor {
 
 class ServidorEcho implements Runnable{
     protected ServerSocket ss;
+    protected ArrayList<AstSocket> socketList;
     
     public ServidorEcho(int port){
         try {
@@ -45,11 +45,9 @@ class ServidorEcho implements Runnable{
             try {
                 while(true){
                     AstSocket s = new AstSocket(ss.accept());
-                    String rebut = s.rebre(); //semantica bloquejant
-                    System.out.println("rebut : " + rebut +"\n");
-                    s.enviar(rebut);
+                    socketList.add(s);
+                    new Thread(new Worker(s, socketList)).start();
                 }
-            
             } catch (IOException ex) {
                 Logger.getLogger(ServidorEcho.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -61,14 +59,18 @@ class Worker implements Runnable {
     protected AstSocket socket;
     protected ArrayList<AstSocket> listaSockets;
 
-    public Worker(AstSocket s, ArrayList<AstSocket> list, int port) {
+    public Worker(AstSocket s, ArrayList<AstSocket> list) {
         socket = s;
         listaSockets = list;
     }
 
     public void run() {
-        // deja pasar si el sentido del coche es el mismo que el actual
-        // el momento que viene un coche del sentido contrario se espera
-        // y cuando se vacie el sentido actual cambia y continua la lógica
+        String rebut = socket.rebre(); //semantica bloquejant
+        while (!rebut.equals("exit")) {
+            // deja pasar si el sentido del coche es el mismo que el actual
+            // el momento que viene un coche del sentido contrario se espera
+            // y cuando se vacie el sentido actual cambia y continua la lógica
+            socket.enviar(rebut);
+        }
     }
 }
