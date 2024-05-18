@@ -89,7 +89,7 @@ class FilTeclat implements Runnable{
                 socket.enviar(txtUsuari);
                 
                 missatgeRebut.espera();
-            
+                
             } catch (IOException ex) {
                 Logger.getLogger(FilTeclat.class.getName()).log(Level.SEVERE, null, ex);
             }

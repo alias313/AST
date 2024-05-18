@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -37,7 +36,6 @@ public class Servidor {
 
 class ServidorEcho implements Runnable{
     protected ServerSocket ss;
-    protected ArrayList<AstSocket> socketList;
     
     public ServidorEcho(int port){
         try {
@@ -52,8 +50,7 @@ class ServidorEcho implements Runnable{
             try {
                 while(true){
                     AstSocket s = new AstSocket(ss.accept());
-                    socketList.add(s);
-                    new Thread(new Worker(s, socketList)).start();
+                    new Thread(new Worker(s)).start();
                 }
             } catch (IOException ex) {
                 Logger.getLogger(ServidorEcho.class.getName()).log(Level.SEVERE, null, ex);
@@ -64,12 +61,10 @@ class ServidorEcho implements Runnable{
 
 class Worker extends Servidor implements Runnable {
     protected AstSocket socket;
-    protected ArrayList<AstSocket> listaSockets;
     protected boolean sentitCotxe, validRebut;
 
-    public Worker(AstSocket s, ArrayList<AstSocket> list) {
+    public Worker(AstSocket s) {
         socket = s;
-        listaSockets = list;
     }
 
     public void run() {
@@ -89,8 +84,8 @@ class Worker extends Servidor implements Runnable {
             default:
                 break;
         }
-        
-    while (!rebut.equals("exit") && validRebut) {
+
+        while (!rebut.equals("exit") && validRebut) {
             // deja pasar si el sentido del coche es el mismo que el actual
             // el momento que viene un coche del sentido contrario se espera
             // y cuando se vacie el sentido actual cambia y continua la lógica
