@@ -62,6 +62,7 @@ class ServidorEcho implements Runnable{
 class Worker extends Servidor implements Runnable {
     protected AstSocket socket;
     protected boolean sentitCotxe, validRebut;
+    String rebut = new String();
 
     public Worker(AstSocket s) {
         socket = s;
@@ -69,33 +70,38 @@ class Worker extends Servidor implements Runnable {
 
     public void run() {
         System.out.println("Worker started and ready to receive");
-        String rebut = socket.rebre(); //semantica bloquejant
-        System.out.println("Recives following message: " + rebut);
+        while (!rebut.equals("exit")) {
+            validRebut = false;
+            rebut = socket.rebre(); //semantica bloquejant
+            System.out.println("Recives following message: " + rebut);
 
-        switch (rebut) {
-            case "north":
-                validRebut = true;
-                sentitCotxe = true;
-                break;
-            
-            case "south":
-                validRebut = true;
-                sentitCotxe = false;
-                break;
+            switch (rebut) {
+                case "north":
+                    validRebut = true;
+                    sentitCotxe = true;
+                    break;
+                
+                case "south":
+                    validRebut = true;
+                    sentitCotxe = false;
+                    break;
 
-            default:
-                break;
-        }
+                default:
+                    break;
+            }
 
-        while (!rebut.equals("exit") && validRebut) {
-            // deja pasar si el sentido del coche es el mismo que el actual
-            // el momento que viene un coche del sentido contrario se espera
-            // y cuando se vacie el sentido actual cambia y continua la lógica
+            if (validRebut) {
+                // deja pasar si el sentido del coche es el mismo que el actual
+                // el momento que viene un coche del sentido contrario se espera
+                // y cuando se vacie el sentido actual cambia y continua la lógica
 
-            // El mismo thread solo indica el sentido la primera vez que se llamas
-            // porque las siguientes por fuerza es el contrario del anterior
-            this.entrar(); // blockejant
-            this.sortir(rebut);
+                // El mismo thread solo indica el sentido la primera vez que se llamas
+                // porque las siguientes por fuerza es el contrario del anterior
+                this.entrar(); // blockejant
+                this.sortir(rebut);
+            } else {
+                socket.enviar(rebut);
+            }
         }
     }
 

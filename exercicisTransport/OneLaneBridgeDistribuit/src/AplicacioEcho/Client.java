@@ -18,8 +18,7 @@ import java.util.logging.Logger;
  * @author usuari.aula
  */
 public class Client {
-
-    
+    protected boolean running = true;
     public static void main(String[] args){
         new Thread(new ClientEcho(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR)).start();
     }
@@ -27,7 +26,7 @@ public class Client {
     
 }
 
-class ClientEcho implements Runnable{
+class ClientEcho extends Client implements Runnable{
     protected AstSocket socket;
     protected FilTeclat teclatTreaballador;
     protected FilSocket socketTreballador;
@@ -48,7 +47,7 @@ class ClientEcho implements Runnable{
     }
 }
 
-class FilSocket implements Runnable{
+class FilSocket extends Client implements Runnable{
     protected AstSocket socket;
     protected MonitorSync missatgeRebut;    
 
@@ -58,16 +57,17 @@ class FilSocket implements Runnable{
     }    
     
     public void run(){
-        while(true){
+        while(running){
             String txtEcho = socket.rebre();  //semantica bloquejant
             System.out.println("Echo rebut : " + txtEcho);
             System.out.println("");
             missatgeRebut.avisa();
+            if (txtEcho.equals("Exit")) running = false;
         }
     }
 }
 
-class FilTeclat implements Runnable{
+class FilTeclat extends Client implements Runnable{
     protected AstSocket socket;
     protected BufferedReader entradaUsuari;
     protected MonitorSync missatgeRebut;
@@ -78,7 +78,7 @@ class FilTeclat implements Runnable{
         missatgeRebut = mon;
     }
     public void run(){
-        while(true){
+        while(running){
             try {
                 System.out.println("entra miss : ");
                 
