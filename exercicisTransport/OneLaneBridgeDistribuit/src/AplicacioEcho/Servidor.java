@@ -68,7 +68,9 @@ class Worker extends Servidor implements Runnable {
     }
 
     public void run() {
+        System.out.println("Worker started and ready to receive");
         String rebut = socket.rebre(); //semantica bloquejant
+        System.out.println("Recives following message: " + rebut);
 
         switch (rebut) {
             case "north":
