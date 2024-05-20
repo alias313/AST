@@ -23,6 +23,7 @@ public class Servidor {
     protected boolean sentitActual;
     protected int cotxesSentitContrariEsperant, cotxesSentitActualEsperant;
     protected int cotxesEnTransit;
+    protected int numberOfWorkers;
     protected Lock mon = new ReentrantLock();
     protected Condition sentitContrariPotPassar, sentitActualPotPassar = mon.newCondition();
 
@@ -34,7 +35,7 @@ public class Servidor {
     }    
 }
 
-class ServidorEcho implements Runnable{
+class ServidorEcho extends Servidor implements Runnable{
     protected ServerSocket ss;
     
     public ServidorEcho(int port){
@@ -50,7 +51,8 @@ class ServidorEcho implements Runnable{
             try {
                 while(true){
                     AstSocket s = new AstSocket(ss.accept());
-                    new Thread(new Worker(s)).start();
+                    numberOfWorkers++;
+                    new Thread(new Worker(s, numberOfWorkers)).start();
                 }
             } catch (IOException ex) {
                 Logger.getLogger(ServidorEcho.class.getName()).log(Level.SEVERE, null, ex);
@@ -62,14 +64,16 @@ class ServidorEcho implements Runnable{
 class Worker extends Servidor implements Runnable {
     protected AstSocket socket;
     protected boolean sentitCotxe, validRebut, running;
+    protected int workerId;
     String rebut = new String();
 
-    public Worker(AstSocket s) {
+    public Worker(AstSocket s, int id) {
         socket = s;
+        workerId = id;
     }
 
     public void run() {
-        System.out.println("Worker started and ready to receive");
+        System.out.println("Worker " + workerId + " started and ready to receive");
         running = true;
         while (running) {
             validRebut = false;
@@ -110,7 +114,8 @@ class Worker extends Servidor implements Runnable {
                 System.out.println(ex);
             }
         }
-        System.out.println("Worker stopped receiving");
+        numberOfWorkers--;
+        System.out.println("Worker " + workerId + " finished connection");
     }
 
     public void entrar() {

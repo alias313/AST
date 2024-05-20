@@ -35,7 +35,7 @@ public class Client {
     
 }
 
-class ClientCar extends Client implements Runnable{
+class ClientCar implements Runnable{
     protected AstSocket socket;
     protected FilTeclat teclatTreaballador;
     protected FilSocket socketTreballador;
@@ -56,7 +56,7 @@ class ClientCar extends Client implements Runnable{
     }
 }
 
-class FilSocket extends Client implements Runnable{
+class FilSocket implements Runnable{
     protected AstSocket socket;
     protected MonitorSync missatgeRebut;    
 
@@ -75,7 +75,7 @@ class FilSocket extends Client implements Runnable{
     }
 }
 
-class FilTeclat extends Client implements Runnable{
+class FilTeclat implements Runnable{
     protected AstSocket socket;
     protected BufferedReader entradaUsuari;
     protected MonitorSync missatgeRebut;
@@ -96,7 +96,7 @@ class FilTeclat extends Client implements Runnable{
 
                 System.out.println("");
                 socket.enviar(txtUsuari);
-                
+
                 if (txtUsuari.toLowerCase().equals("exit")) System.exit(0);
 /*                 if (sentitCar) socket.enviar("north");
                 else if (!sentitCar) socket.enviar("south");
