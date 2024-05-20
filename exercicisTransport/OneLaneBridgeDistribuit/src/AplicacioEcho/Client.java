@@ -18,24 +18,33 @@ import java.util.logging.Logger;
  * @author usuari.aula
  */
 public class Client {
-    protected boolean running = true;
     public static void main(String[] args){
-        new Thread(new ClientEcho(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR)).start();
+        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
+/*         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
+        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
+        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
+        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
+        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
+        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
+        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
+        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
+        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
+ */
     }
     
     
 }
 
-class ClientEcho extends Client implements Runnable{
+class ClientCar extends Client implements Runnable{
     protected AstSocket socket;
     protected FilTeclat teclatTreaballador;
     protected FilSocket socketTreballador;
     protected MonitorSync missatgeRebut;
     
-    public ClientEcho(String ip, int port){
+    public ClientCar(String ip, int port, boolean sentit){
         socket = new AstSocket(ip, port);
         missatgeRebut = new MonitorSync();
-        teclatTreaballador = new  FilTeclat(socket, missatgeRebut);
+        teclatTreaballador = new  FilTeclat(socket, missatgeRebut, sentit);
         socketTreballador = new FilSocket(socket, missatgeRebut);
 
     }
@@ -57,12 +66,11 @@ class FilSocket extends Client implements Runnable{
     }    
     
     public void run(){
-        while(running){
+        while(true){
             String txtEcho = socket.rebre();  //semantica bloquejant
             System.out.println("Echo rebut : " + txtEcho);
             System.out.println("");
             missatgeRebut.avisa();
-            if (txtEcho.equals("Exit")) running = false;
         }
     }
 }
@@ -71,29 +79,32 @@ class FilTeclat extends Client implements Runnable{
     protected AstSocket socket;
     protected BufferedReader entradaUsuari;
     protected MonitorSync missatgeRebut;
+    protected boolean sentitCar;
     
-    public FilTeclat(AstSocket sc, MonitorSync mon){
+    public FilTeclat(AstSocket sc, MonitorSync mon, boolean sentit){
         socket = sc;
         entradaUsuari = new BufferedReader (new InputStreamReader(System.in));
         missatgeRebut = mon;
+        sentitCar = sentit;
     }
     public void run(){
-        while(running){
+        while(true){
             try {
                 System.out.println("entra miss : ");
                 
                 String txtUsuari = entradaUsuari.readLine(); //semantica bloquejant
 
                 System.out.println("");
-                
                 socket.enviar(txtUsuari);
                 
+                if (txtUsuari.toLowerCase().equals("exit")) System.exit(0);
+/*                 if (sentitCar) socket.enviar("north");
+                else if (!sentitCar) socket.enviar("south");
+ */                
                 missatgeRebut.espera();
-                
             } catch (IOException ex) {
                 Logger.getLogger(FilTeclat.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
         }
     }
 }

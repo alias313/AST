@@ -61,7 +61,7 @@ class ServidorEcho implements Runnable{
 
 class Worker extends Servidor implements Runnable {
     protected AstSocket socket;
-    protected boolean sentitCotxe, validRebut;
+    protected boolean sentitCotxe, validRebut, running;
     String rebut = new String();
 
     public Worker(AstSocket s) {
@@ -70,39 +70,47 @@ class Worker extends Servidor implements Runnable {
 
     public void run() {
         System.out.println("Worker started and ready to receive");
-        while (!rebut.equals("exit")) {
+        running = true;
+        while (running) {
             validRebut = false;
-            rebut = socket.rebre(); //semantica bloquejant
-            System.out.println("Recives following message: " + rebut);
+            try {
+                rebut = socket.rebre(); //semantica bloquejant
+                System.out.println("Recives following message: " + rebut);
 
-            switch (rebut) {
-                case "north":
-                    validRebut = true;
-                    sentitCotxe = true;
-                    break;
-                
-                case "south":
-                    validRebut = true;
-                    sentitCotxe = false;
-                    break;
+                switch (rebut.toLowerCase()) {
+                    case "north":
+                        validRebut = true;
+                        sentitCotxe = true;
+                        break;
+                    
+                    case "south":
+                        validRebut = true;
+                        sentitCotxe = false;
+                        break;
+                    case "exit":
+                        running = false;               
+                    default:
+                        break;
+                }
 
-                default:
-                    break;
-            }
+                if (validRebut) {
+                    // deja pasar si el sentido del coche es el mismo que el actual
+                    // el momento que viene un coche del sentido contrario se espera
+                    // y cuando se vacie el sentido actual cambia y continua la lógica
 
-            if (validRebut) {
-                // deja pasar si el sentido del coche es el mismo que el actual
-                // el momento que viene un coche del sentido contrario se espera
-                // y cuando se vacie el sentido actual cambia y continua la lógica
-
-                // El mismo thread solo indica el sentido la primera vez que se llamas
-                // porque las siguientes por fuerza es el contrario del anterior
-                this.entrar(); // blockejant
-                this.sortir(rebut);
-            } else {
-                socket.enviar(rebut);
+                    // El mismo thread solo indica el sentido la primera vez que se llamas
+                    // porque las siguientes por fuerza es el contrario del anterior
+                    this.entrar(); // blockejant
+                    this.sortir(rebut);
+                } else if (running) {
+                    socket.enviar(rebut);
+                }
+            } catch (NullPointerException ex) {
+                running = false;
+                System.out.println(ex);
             }
         }
+        System.out.println("Worker stopped receiving");
     }
 
     public void entrar() {
