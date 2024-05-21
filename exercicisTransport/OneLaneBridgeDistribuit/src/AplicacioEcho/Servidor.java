@@ -107,6 +107,11 @@ class Worker implements Runnable {
                     // El mismo thread solo indica el sentido la primera vez que se llamas
                     // porque las siguientes por fuerza es el contrario del anterior
                     this.entrar(); // blockejant
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
                     this.sortir(rebut);
                 } else if (running) {
                     socket.enviar(rebut);

@@ -23,12 +23,12 @@ public class Client {
         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
-/*         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
-        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
-        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
+        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, false)).start();
+        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, false)).start();
+        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, false)).start();
 
         for (int i = 0; i < 20; i++) {
             double rand = Math.random();
@@ -38,7 +38,7 @@ public class Client {
                 new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
             }
         }
- */
+
     }
     
     
