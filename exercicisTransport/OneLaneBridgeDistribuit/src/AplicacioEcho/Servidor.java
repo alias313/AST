@@ -20,22 +20,23 @@ import javax.net.ssl.SSLServerSocket;
  * @author usuari.aula
  */
 public class Servidor {
-    protected boolean sentitActual;
-    protected int cotxesSentitContrariEsperant, cotxesSentitActualEsperant;
-    protected int cotxesEnTransit;
-    protected int numberOfWorkers;
-    protected Lock mon = new ReentrantLock();
-    protected Condition sentitContrariPotPassar, sentitActualPotPassar = mon.newCondition();
+    static boolean sentitActual;
+    static int cotxesSentitContrariEsperant, cotxesSentitActualEsperant;
+    static int cotxesEnTransit;
+    static int numberOfWorkers;
+    static Lock mon = new ReentrantLock();
+    static Condition sentitContrariPotPassar = mon.newCondition(); 
+    static Condition sentitActualPotPassar = mon.newCondition();
 
     public static void main(String[] args) {
         ServidorEcho echo = new ServidorEcho(Comms.PORT_SERVIDOR);
-        System.out.println("Servidor Eco Escoltant ... Port : "+Comms.PORT_SERVIDOR + "\n");
+        System.out.println("Servidor Eco Escoltant ... Port : " + Comms.PORT_SERVIDOR + "\n");
         new Thread(echo).start();
         
     }    
 }
 
-class ServidorEcho extends Servidor implements Runnable{
+class ServidorEcho implements Runnable{
     protected ServerSocket ss;
     
     public ServidorEcho(int port){
@@ -51,8 +52,9 @@ class ServidorEcho extends Servidor implements Runnable{
             try {
                 while(true){
                     AstSocket s = new AstSocket(ss.accept());
-                    numberOfWorkers++;
-                    new Thread(new Worker(s, numberOfWorkers)).start();
+                    System.out.println("Received new foreign connection");
+                    Servidor.numberOfWorkers++;
+                    new Thread(new Worker(s, Servidor.numberOfWorkers)).start();
                 }
             } catch (IOException ex) {
                 Logger.getLogger(ServidorEcho.class.getName()).log(Level.SEVERE, null, ex);
@@ -61,7 +63,7 @@ class ServidorEcho extends Servidor implements Runnable{
     }
 }
 
-class Worker extends Servidor implements Runnable {
+class Worker implements Runnable {
     protected AstSocket socket;
     protected boolean sentitCotxe, validRebut, running;
     protected int workerId;
@@ -79,7 +81,7 @@ class Worker extends Servidor implements Runnable {
             validRebut = false;
             try {
                 rebut = socket.rebre(); //semantica bloquejant
-                System.out.println("Recives following message: " + rebut);
+                System.out.println("Worker " + workerId + " receives following message: " + rebut);
 
                 switch (rebut.toLowerCase()) {
                     case "north":
@@ -111,55 +113,58 @@ class Worker extends Servidor implements Runnable {
                 }
             } catch (NullPointerException ex) {
                 running = false;
-                System.out.println(ex);
+                //System.out.println(ex);
             }
         }
-        numberOfWorkers--;
+        Servidor.mon.lock();
+        Servidor.numberOfWorkers--;
         System.out.println("Worker " + workerId + " finished connection");
+        System.out.println(Servidor.numberOfWorkers + " workers left.");
+        Servidor.mon.unlock();
     }
 
     public void entrar() {
+        Servidor.mon.lock();
         try {
-            mon.lock();
-            if (cotxesEnTransit == 0 && cotxesSentitContrariEsperant == 0) {
-                sentitActual = sentitCotxe;
+            if (Servidor.cotxesEnTransit == 0 && Servidor.cotxesSentitContrariEsperant == 0) {
+                Servidor.sentitActual = sentitCotxe;
             }
-            while (cotxesSentitContrariEsperant > 0) {
-                cotxesSentitActualEsperant++;
-                sentitActualPotPassar.awaitUninterruptibly();
-                cotxesSentitActualEsperant--;
+            while (Servidor.cotxesSentitContrariEsperant > 0) {
+                Servidor.cotxesSentitActualEsperant++;
+                Servidor.sentitActualPotPassar.awaitUninterruptibly();
+                Servidor.cotxesSentitActualEsperant--;
             }
 
-            while (sentitActual != sentitCotxe) {
-                cotxesSentitContrariEsperant++;
-                sentitContrariPotPassar.awaitUninterruptibly();
-                cotxesSentitContrariEsperant--;
-                if (cotxesSentitContrariEsperant == 0) {
-                    sentitActualPotPassar.signalAll();
+            while (Servidor.sentitActual != sentitCotxe) {
+                Servidor.cotxesSentitContrariEsperant++;
+                Servidor.sentitContrariPotPassar.awaitUninterruptibly();
+                Servidor.cotxesSentitContrariEsperant--;
+                if (Servidor.cotxesSentitContrariEsperant == 0) {
+                    Servidor.sentitActualPotPassar.signalAll();
                 }
             }
 
-            cotxesEnTransit++;
+            Servidor.cotxesEnTransit++;
             System.out.println("ENTRA sentit " + sentitCotxe);
         } catch (Exception ex) {
             System.out.println(ex);
         } finally {
-            mon.unlock();
+            Servidor.mon.unlock();
         }
     }
 
     public void sortir(String rebut) {
+        Servidor.mon.lock();
         try {
-            mon.lock();
-            cotxesEnTransit--;
-            if (cotxesEnTransit == 0 && cotxesSentitContrariEsperant > 0) {
-                sentitActual = !sentitActual;
-                sentitContrariPotPassar.signalAll();
+            Servidor.cotxesEnTransit--;
+            if (Servidor.cotxesEnTransit == 0 && Servidor.cotxesSentitContrariEsperant > 0) {
+                Servidor.sentitActual = !Servidor.sentitActual;
+                Servidor.sentitContrariPotPassar.signalAll();
             }
             System.out.println("SURT sentit " + sentitCotxe);
             socket.enviar(rebut);
         } finally {
-            mon.unlock();
+            Servidor.mon.unlock();
         }
     }
 }

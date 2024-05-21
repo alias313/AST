@@ -20,15 +20,24 @@ import java.util.logging.Logger;
 public class Client {
     public static void main(String[] args){
         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
+        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
+        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
+        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
 /*         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
-        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
-        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
-        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
+
+        for (int i = 0; i < 20; i++) {
+            double rand = Math.random();
+            if (rand > 0.3) {
+                new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, false)).start();
+            } else {
+                new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
+            }
+        }
  */
     }
     
@@ -79,32 +88,43 @@ class FilTeclat implements Runnable{
     protected AstSocket socket;
     protected BufferedReader entradaUsuari;
     protected MonitorSync missatgeRebut;
-    protected boolean sentitCar;
+    protected String sentitCar;
     
     public FilTeclat(AstSocket sc, MonitorSync mon, boolean sentit){
         socket = sc;
         entradaUsuari = new BufferedReader (new InputStreamReader(System.in));
         missatgeRebut = mon;
-        sentitCar = sentit;
+        if (sentit) sentitCar = "north";
+        else if (!sentit) sentitCar = "south";
     }
+
+    public FilTeclat(AstSocket sc, MonitorSync mon){
+        socket = sc;
+        entradaUsuari = new BufferedReader (new InputStreamReader(System.in));
+        missatgeRebut = mon;
+        sentitCar = "chat";
+    }
+
     public void run(){
-        while(true){
-            try {
-                System.out.println("entra miss : ");
+        try {
+            if (sentitCar.equals("north")) socket.enviar("north");
+            else if (sentitCar.equals("south")) socket.enviar("south");
+            else {
+                while (true) {
+                    System.out.println("entra miss : ");
                 
-                String txtUsuari = entradaUsuari.readLine(); //semantica bloquejant
+                    String txtUsuari = entradaUsuari.readLine(); //semantica bloquejant
 
-                System.out.println("");
-                socket.enviar(txtUsuari);
+                    System.out.println("");
+                    socket.enviar(txtUsuari);
 
-                if (txtUsuari.toLowerCase().equals("exit")) System.exit(0);
-/*                 if (sentitCar) socket.enviar("north");
-                else if (!sentitCar) socket.enviar("south");
- */                
-                missatgeRebut.espera();
-            } catch (IOException ex) {
-                Logger.getLogger(FilTeclat.class.getName()).log(Level.SEVERE, null, ex);
+                    if (txtUsuari.toLowerCase().equals("exit")) System.exit(0);
+                }
             }
+            
+            missatgeRebut.espera();
+        } catch (IOException ex) {
+            Logger.getLogger(FilTeclat.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
