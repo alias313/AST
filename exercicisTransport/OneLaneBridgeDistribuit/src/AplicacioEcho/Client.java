@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class Client {
     public static void main(String[] args){
-        new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
+/*         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
         new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
@@ -38,10 +38,60 @@ public class Client {
                 new Thread(new ClientCar(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR, true)).start();
             }
         }
-
+ */
+        PontRepresentant pont = new PontRepresentant(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR);
+        new Thread(new Cotxe(pont, Comms.NORT)).start();
     }
     
     
+}
+
+class PontRepresentant implements Pont {
+    protected AstSocket socket;
+
+    public PontRepresentant(String ip, int port) {
+        socket = new AstSocket(ip, port);
+    }
+
+    public void entrar(String sentitCotxe) {
+        enviarPeticio(Comms.ENTRAR, sentitCotxe);
+    }
+
+    public void sortir() {
+        enviarPeticio(Comms.SORTIR, null);
+    }
+
+    public void noTornar() {
+        enviarPeticio(Comms.NEVER, null);
+    }
+
+    protected void enviarPeticio(String accio, String sentit) {				
+		socket.enviar(accio);
+        socket.enviar(sentit);
+		String resposta = socket.rebre(); // bloquejant
+        System.out.println(resposta);
+	}
+}
+
+class Cotxe implements Runnable {
+    protected Pont pont;
+    protected String sentit;
+
+    public Cotxe (Pont p, String sentitOrdenat) {
+        pont = p;
+        sentit = sentitOrdenat;
+    }
+
+    public void run() {
+        pont.entrar(sentit);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        pont.sortir();
+        pont.noTornar();
+    }
 }
 
 class ClientCar implements Runnable{

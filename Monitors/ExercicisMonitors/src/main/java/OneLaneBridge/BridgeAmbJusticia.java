@@ -4,7 +4,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class BridgeAmbJusticia {
+public class BridgeAmbJusticia implements Bridge{
     protected boolean sentitActual;
     protected int cotxesSentitContrariEsperant, cotxesSentitActualEsperant;
     protected int cotxesEnTransit;
