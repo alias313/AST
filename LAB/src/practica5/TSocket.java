@@ -31,8 +31,8 @@ public class TSocket extends TSocket_base {
     // init sender variables
     MSS = p.getNetwork().getMTU() - Const.IP_HEADER - Const.TCP_HEADER;
     // init receiver variables
-    rcv_Queue = new CircularQueue<>(Const.RCV_QUEUE_SIZE);
-    snd_rcvWnd = Const.RCV_QUEUE_SIZE;
+    rcv_Queue = new CircularQueue<>(2);
+    snd_rcvWnd = 2;
   }
 
   // -------------  SENDER PART  ---------------
@@ -63,22 +63,21 @@ public class TSocket extends TSocket_base {
           appCV.awaitUninterruptibly();
         }
         if (snd_rcvWnd > 0) {
-        int numBytesAPosarSegment = Math.min(MSS, bytesQuedenPerEnviar);
-        TCPSegment seg = segmentize(data, offset, numBytesAPosarSegment);
-        network.send(seg);
-        snd_UnacknowledgedSeg = seg;
-        snd_sndNxt++;
-        bytesQuedenPerEnviar -= numBytesAPosarSegment;
-        offset += numBytesAPosarSegment;
+          int numBytesAPosarSegment = Math.min(MSS, bytesQuedenPerEnviar);
+          TCPSegment seg = segmentize(data, offset, numBytesAPosarSegment);
+          network.send(seg);
+          snd_UnacknowledgedSeg = seg;
+          snd_sndNxt++;
+          bytesQuedenPerEnviar -= numBytesAPosarSegment;
+          offset += numBytesAPosarSegment;
         } else {
-        int numBytesAPosarSegment = 1;
-        snd_UnacknowledgedSeg = segmentize(data, offset,
-        numBytesAPosarSegment);
-        log.printBLACK("----- zero-window probe ON -----");
-        zero_wnd_probe_ON = true;
-        bytesQuedenPerEnviar -= numBytesAPosarSegment;
-        offset += numBytesAPosarSegment;
-        snd_sndNxt++;
+          int numBytesAPosarSegment = 1;
+          snd_UnacknowledgedSeg = segmentize(data, offset, numBytesAPosarSegment);
+          log.printBLACK("----- zero-window probe ON -----");
+          zero_wnd_probe_ON = true;
+          bytesQuedenPerEnviar -= numBytesAPosarSegment;
+          offset += numBytesAPosarSegment;
+          snd_sndNxt++;
         }
         startRTO();
       }
@@ -97,7 +96,7 @@ public class TSocket extends TSocket_base {
     TCPSegment seg = new TCPSegment();
     byte[] finalData = new byte[length];
     for (int i = 0; i < length; i++) {
-    finalData[i] = data[offset + i];
+      finalData[i] = data[offset + i];
     }
     seg.setData(finalData);
     seg.setPsh(true);
