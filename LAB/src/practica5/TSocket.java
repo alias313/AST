@@ -77,9 +77,8 @@ public class TSocket extends TSocket_base {
   protected TCPSegment segmentize(byte[] data, int offset, int length) {
     TCPSegment seg = new TCPSegment();
     byte[] finalData = new byte[length];
-    for (int i = 0; i < length; i++) {
-      finalData[i] = data[offset + i];
-    }
+
+    System.arraycopy(data, offset, finalData, 0, length);
     seg.setData(finalData);
     seg.setPsh(true);
     seg.setSeqNum(snd_sndNxt);
