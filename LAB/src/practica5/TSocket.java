@@ -40,18 +40,6 @@ public class TSocket extends TSocket_base {
   public void sendData(byte[] data, int offset, int length) {
     lock.lock();
     try {
-/*       int sent = 0;
-      while (length > sent) {
-        int to_send = Math.min(length - sent, MSS);
-        TCPSegment sndSegment = segmentize(data, offset + sent, to_send);
-        sndSegment.setSourcePort(localPort);
-        sndSegment.setDestinationPort(remotePort);  
-        network.send(sndSegment);
-        snd_sndNxt++;
-        appCV.awaitUninterruptibly();
-        sent += to_send;
-      }
- */      
       int bytesQuedenPerEnviar = length;
       while (bytesQuedenPerEnviar > 0) {
         while ((snd_sndNxt == snd_rcvNxt + snd_rcvWnd) && snd_rcvWnd > 0 ||
@@ -87,12 +75,6 @@ public class TSocket extends TSocket_base {
   }
 
   protected TCPSegment segmentize(byte[] data, int offset, int length) {
-/*     TCPSegment seg = new TCPSegment();
-    seg.setPsh(true);
-    seg.setSeqNum(snd_sndNxt);
-    seg.setData(data, offset, length);
-    return seg; */
-
     TCPSegment seg = new TCPSegment();
     byte[] finalData = new byte[length];
     for (int i = 0; i < length; i++) {
@@ -133,15 +115,6 @@ public class TSocket extends TSocket_base {
   public int receiveData(byte[] buf, int offset, int maxlen) {
     lock.lock();
     try {
-/*       int bytesConsumed = 0;
-      while (rcv_Queue.empty()) {
-        appCV.awaitUninterruptibly();
-      }
-      while (bytesConsumed < maxlen && !rcv_Queue.empty()) {
-        bytesConsumed += consumeSegment(buf, offset+bytesConsumed, maxlen-bytesConsumed);
-      }
-      return bytesConsumed;
- */      
       while (rcv_Queue.empty()) {
         //log.printBLACK("Cua buida");
         appCV.awaitUninterruptibly();
@@ -188,19 +161,6 @@ public class TSocket extends TSocket_base {
   public void processReceivedSegment(TCPSegment rseg) {
     lock.lock();
     try{
-/*       if (rseg.isPsh()) {
-          // variables de recv
-          printRcvSeg(rseg);
-          rcv_Queue.put(rseg);
-          appCV.signal();
-          rcv_rcvNxt = rseg.getSeqNum() + 1;
-          sendAck();  
-      } else if (rseg.isAck()) {
-          // variables de snd
-          printRcvSeg(rseg);
-          appCV.signal();
-      }
- */
       if (rseg.isPsh()) {
         // REBEM UN SEGMENT
         //log.printBLACK("Igualtat:" + rseg.getSeqNum() + "=" + rcv_rcvNxt);
