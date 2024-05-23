@@ -40,7 +40,7 @@ public class TSocket extends TSocket_base {
   public void sendData(byte[] data, int offset, int length) {
     lock.lock();
     try {
-      int sent = 0;
+/*       int sent = 0;
       while (length > sent) {
         int to_send = Math.min(length - sent, MSS);
         TCPSegment sndSegment = segmentize(data, offset + sent, to_send);
@@ -51,16 +51,59 @@ public class TSocket extends TSocket_base {
         appCV.awaitUninterruptibly();
         sent += to_send;
       }
-      } finally {
+ */      
+      int bytesQuedenPerEnviar = length;
+      while (bytesQuedenPerEnviar > 0) {
+        while ((snd_sndNxt == snd_rcvNxt + snd_rcvWnd) && snd_rcvWnd > 0 ||
+        zero_wnd_probe_ON) {
+          //System.out.println("Aturem el fil");
+          //System.out.println("Condició finestra zero:" + zero_wnd_probe_ON);
+          //log.printBLUE("Tamany finestra: " + snd_rcvWnd);
+          //System.out.println("Condició tamany finestra: " + snd_sndNxt + " = " + (snd_rcvNxt + "+" + snd_rcvWnd));
+          appCV.awaitUninterruptibly();
+        }
+        if (snd_rcvWnd > 0) {
+        int numBytesAPosarSegment = Math.min(MSS, bytesQuedenPerEnviar);
+        TCPSegment seg = segmentize(data, offset, numBytesAPosarSegment);
+        network.send(seg);
+        snd_UnacknowledgedSeg = seg;
+        snd_sndNxt++;
+        bytesQuedenPerEnviar -= numBytesAPosarSegment;
+        offset += numBytesAPosarSegment;
+        } else {
+        int numBytesAPosarSegment = 1;
+        snd_UnacknowledgedSeg = segmentize(data, offset,
+        numBytesAPosarSegment);
+        log.printBLACK("----- zero-window probe ON -----");
+        zero_wnd_probe_ON = true;
+        bytesQuedenPerEnviar -= numBytesAPosarSegment;
+        offset += numBytesAPosarSegment;
+        snd_sndNxt++;
+        }
+        startRTO();
+      }
+    } finally {
       lock.unlock();
     }
   }
 
   protected TCPSegment segmentize(byte[] data, int offset, int length) {
-    TCPSegment seg = new TCPSegment();
+/*     TCPSegment seg = new TCPSegment();
     seg.setPsh(true);
     seg.setSeqNum(snd_sndNxt);
     seg.setData(data, offset, length);
+    return seg; */
+
+    TCPSegment seg = new TCPSegment();
+    byte[] finalData = new byte[length];
+    for (int i = 0; i < length; i++) {
+    finalData[i] = data[offset + i];
+    }
+    seg.setData(finalData);
+    seg.setPsh(true);
+    seg.setSeqNum(snd_sndNxt);
+    seg.setDestinationPort(remotePort);
+    seg.setSourcePort(localPort);
     return seg;
   }
 
@@ -68,7 +111,19 @@ public class TSocket extends TSocket_base {
   protected void timeout() {
     lock.lock();
     try {
-      throw new RuntimeException("//Completar...");
+      if (snd_UnacknowledgedSeg != null) {
+        if (zero_wnd_probe_ON) {
+        //log.printBLUE("Espai lliure finestra: " + snd_rcvWnd);
+        log.printPURPLE("0-wnd probe:" + snd_UnacknowledgedSeg);
+        network.send(snd_UnacknowledgedSeg);
+        } else {
+        //log.printBLUE("Espai lliure finestra: " + snd_rcvWnd);
+        log.printPURPLE("retrans" + snd_UnacknowledgedSeg);
+        network.send(snd_UnacknowledgedSeg);
+        }
+        appCV.signal();
+        startRTO();
+      }    
     } finally {
       lock.unlock();
     }
@@ -79,7 +134,7 @@ public class TSocket extends TSocket_base {
   public int receiveData(byte[] buf, int offset, int maxlen) {
     lock.lock();
     try {
-      int bytesConsumed = 0;
+/*       int bytesConsumed = 0;
       while (rcv_Queue.empty()) {
         appCV.awaitUninterruptibly();
       }
@@ -87,6 +142,20 @@ public class TSocket extends TSocket_base {
         bytesConsumed += consumeSegment(buf, offset+bytesConsumed, maxlen-bytesConsumed);
       }
       return bytesConsumed;
+ */      
+      while (rcv_Queue.empty()) {
+        //log.printBLACK("Cua buida");
+        appCV.awaitUninterruptibly();
+      }
+      int totalbytes = 0;
+      int maximBytes = maxlen;
+      while (totalbytes < maxlen && !rcv_Queue.empty()) {
+        int agafats = consumeSegment(buf, offset, maximBytes);
+        totalbytes += agafats;
+        offset += agafats;
+        maximBytes -= agafats;
+      }
+      return totalbytes;
     } finally {
       lock.unlock();
     }
@@ -105,13 +174,14 @@ public class TSocket extends TSocket_base {
   }
 
   protected void sendAck() {
-    TCPSegment seg = new TCPSegment();
-    seg.setSourcePort(localPort);
-    seg.setDestinationPort(remotePort);
-    seg.setAck(true);
-    seg.setAckNum(rcv_rcvNxt);
-    seg.setWnd(rcv_Queue.free());
-    network.send(seg);
+    TCPSegment ack = new TCPSegment();
+    ack.setAck(true);
+    ack.setAckNum(rcv_rcvNxt);
+    ack.setDestinationPort(remotePort);
+    ack.setSourcePort(localPort);
+    ack.setWnd(snd_rcvWnd);
+    network.send(ack);
+    snd_UnacknowledgedSeg = ack;
   }
 
   // -------------  SEGMENT ARRIVAL  -------------
@@ -119,7 +189,7 @@ public class TSocket extends TSocket_base {
   public void processReceivedSegment(TCPSegment rseg) {
     lock.lock();
     try{
-      if (rseg.isPsh()) {
+/*       if (rseg.isPsh()) {
           // variables de recv
           printRcvSeg(rseg);
           rcv_Queue.put(rseg);
@@ -130,6 +200,42 @@ public class TSocket extends TSocket_base {
           // variables de snd
           printRcvSeg(rseg);
           appCV.signal();
+      }
+ */
+      if (rseg.isPsh()) {
+        // REBEM UN SEGMENT
+        //log.printBLACK("Igualtat:" + rseg.getSeqNum() + "=" + rcv_rcvNxt);
+        if (rseg.getSeqNum() != rcv_rcvNxt) {
+          System.out.println("Segment perdut" + rseg);
+          sendAck();
+          appCV.signal();
+          return;
+        }
+        rcv_Queue.put(rseg);
+        //log.printBLACK("Rebo el segment amb seqNum:" + rseg.getSeqNum());
+        rcv_rcvNxt = rseg.getSeqNum() + 1;
+        super.printRcvSeg(rseg);
+        snd_rcvWnd = Math.min(1, rcv_Queue.free());
+        sendAck();
+        //System.out.println("Tamany finestra després de processar segment: " + snd_rcvWnd);
+        appCV.signal();
+      } else if (rseg.isAck()) {
+        // REBEM UN ACK
+        stopRTO();
+        //log.printBLACK("Igualtat:" + rseg.getAckNum() + "=" + snd_sndNxt);
+        if (snd_sndNxt != rseg.getAckNum()) {
+          log.printRED("ACK no desitjat!");
+        } else {
+          //log.printBLUE("Tamany finestra: " + snd_rcvWnd);
+          super.printRcvSeg(rseg);
+          snd_rcvWnd = rseg.getWnd();
+          snd_rcvNxt = rseg.getAckNum();
+          if (zero_wnd_probe_ON) {
+            log.printBLACK("----- zero-window probe OFF -----");
+            zero_wnd_probe_ON = false;
+          }
+          appCV.signal();
+        }
       }
     } finally {
       lock.unlock();
