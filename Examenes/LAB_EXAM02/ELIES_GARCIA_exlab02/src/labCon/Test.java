@@ -8,9 +8,9 @@ public class Test {
 
   public static void main(String[] args) throws InterruptedException {
 
-    //SimNet_FullDuplex net = new SimNet_FullDuplex(0.5,0.5);
+    //SimNet_FullDuplex net = new SimNet_FullDuplex();
 
-    SimNet_FullDuplex net = new SimNet_FullDuplex(0.5,0.5);
+    SimNet_FullDuplex net = new SimNet_FullDuplex(0.5, 0.5);
     new Thread(new HostSrv(net.getSrvEnd())).start();
     new Thread(new HostClt(net.getCltEnd())).start();
   }

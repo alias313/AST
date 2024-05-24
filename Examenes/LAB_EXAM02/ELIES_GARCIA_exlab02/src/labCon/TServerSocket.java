@@ -47,7 +47,11 @@ public class TServerSocket extends TSocket_base {
     TSocket sc;
     lock.lock();
     try {
-      throw new RuntimeException("//Completar...");
+      while (acceptQueue.empty()) {
+        appCV.awaitUninterruptibly();
+      }
+      sc = acceptQueue.get();
+      return sc;
     } finally {
       lock.unlock();
     }
@@ -67,7 +71,13 @@ public class TServerSocket extends TSocket_base {
       switch (state) {
         case LISTEN: {
           if (rseg.isSyn()) {
-            throw new RuntimeException("//Completar...");
+            TSocket dispatchSocket = new TSocket(proto, localPort, rseg.getSourcePort());
+            acceptQueue.put(dispatchSocket);
+            dispatchSocket.sendSYN();
+            dispatchSocket.state = ESTABLISHED;
+            log.printGREEN("\t\t\t\t PORT: " + localPort + " ##### STATE ESTABLISHED #####");
+            // thread continues from accept method
+            appCV.signal();
           }
           break;
         }

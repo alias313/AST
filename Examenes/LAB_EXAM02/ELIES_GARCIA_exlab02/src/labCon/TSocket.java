@@ -12,9 +12,10 @@ public class TSocket extends TSocket_base {
 
   protected int state;
   protected CircularQueue<TSocket> acceptQueue;
+  protected TCPSegment unacknowledgedSeg;
   
 
-  int numRetrans = 3;  
+  int numRetrans = 3;
 
   // States of FSM:
   protected final static int  CLOSED      = 0,
@@ -37,7 +38,10 @@ public class TSocket extends TSocket_base {
   public void connect() {
     lock.lock();
     try {
-      throw new RuntimeException("//Completar...");
+      unacknowledgedSeg = sendSYN();
+      state = SYN_SENT;
+      log.printGREEN("\t\t\t\t PORT: " + localPort + " ##### STATE SYN_SENT #####");
+      startRTO();
     } finally {
       lock.unlock();
     }
@@ -50,7 +54,22 @@ public class TSocket extends TSocket_base {
       switch (state) {
         case ESTABLISHED:
         case CLOSE_WAIT: {
-          throw new RuntimeException("//Completar...");
+          if (state == ESTABLISHED) {
+            unacknowledgedSeg = sendFIN();
+            state = FIN_WAIT;
+            log.printGREEN("\t\t\t\t PORT: " + localPort + " ##### STATE FIN_WAIT #####");
+            startRTO();
+            while (state != CLOSED) {
+              appCV.awaitUninterruptibly();
+            }  
+          } else if (state == CLOSE_WAIT) {
+            unacknowledgedSeg = sendFIN();
+            startRTO();
+            while (state != CLOSED) {
+              appCV.awaitUninterruptibly();
+            }  
+          }
+          break;
         }
       }
     } finally {
@@ -60,8 +79,28 @@ public class TSocket extends TSocket_base {
   
     @Override
     protected void timeout() {
-        // Completar
-    }  
+      lock.lock();
+      try {
+        if (unacknowledgedSeg != null) {
+          if (unacknowledgedSeg.isFin()){
+            if (numRetrans == 0) {
+              stopRTO();
+              state = CLOSED;
+              if (state == FIN_WAIT) appCV.signal();
+              log.printGREEN("\t\t\t\t PORT: " + localPort + " ##### STATE CLOSED REACHED RETRANS LIMIT #####");
+            }
+          }
+          if (state != CLOSED) {
+            log.printPURPLE("retrans: " + unacknowledgedSeg.toString());
+            network.send(unacknowledgedSeg);
+            if (unacknowledgedSeg.isFin()) numRetrans--;
+            startRTO();
+          }
+        }
+      } finally {
+        lock.unlock();
+      }
+      }  
 
   /**
    * Segment arrival.
@@ -78,7 +117,12 @@ public class TSocket extends TSocket_base {
 
         case SYN_SENT: {
           if (rseg.isSyn()) {
-            throw new RuntimeException("//Completar...");
+            state = ESTABLISHED;
+            log.printGREEN("\t\t\t\t PORT: " + localPort + " ##### STATE ESTABLISHED #####");
+
+            stopRTO();
+            // continues from connect()
+            //appCV.signal();
           }
           break;
         }
@@ -95,8 +139,27 @@ public class TSocket extends TSocket_base {
               // Ignore the data segment.
             }
           }
+          if (rseg.isSyn()) {
+            if (state  == ESTABLISHED) {
+              sendSYN();
+            }
+          }
           if (rseg.isFin()) {
-            throw new RuntimeException("//Completar...");
+            switch (state) {
+              case ESTABLISHED:
+                state = CLOSE_WAIT;
+                log.printGREEN("\t\t\t\t PORT: " + localPort + " ##### STATE CLOSE_WAIT #####");
+                appCV.signal();
+                break;
+              case FIN_WAIT:
+                stopRTO();
+                state = CLOSED;
+                log.printGREEN("\t\t\t\t PORT: " + localPort + " ##### STATE CLOSED FROM FIN_WAIT#####");
+                appCV.signal();
+                break;
+              default:
+                break;
+            }
           }
           break;
         }
@@ -120,6 +183,54 @@ public class TSocket extends TSocket_base {
         } else {
             log.printPURPLE("\t\t\t\t\t\t\t    sent: " + rseg );
         }
+  }
+
+  public TCPSegment sendSYN(){
+    TCPSegment seg = new TCPSegment();
+    seg.setSourcePort(localPort);
+    seg.setDestinationPort(remotePort);
+    seg.setSyn(true);
+    network.send(seg);
+    return seg;
+  }
+  
+  public void sendSYN_ACK(int numSeq, int numAck){
+    TCPSegment seg = new TCPSegment();
+    seg.setSourcePort(localPort);
+    seg.setDestinationPort(remotePort);
+    seg.setSyn(true);
+    seg.setAck(true);
+    seg.setSeqNum(numSeq);
+    seg.setAckNum(numAck);
+    network.send(seg);
+  }
+  
+  public void sendACK(int numACK){
+    TCPSegment seg = new TCPSegment();
+    seg.setSourcePort(localPort);
+    seg.setDestinationPort(remotePort);
+    seg.setAck(true);
+    seg.setAckNum(numACK);
+    network.send(seg);
+  }
+  
+  public void sendPSH(int numSeq, byte[] data, int offset, int length){
+    TCPSegment seg = new TCPSegment();
+    seg.setSourcePort(localPort);
+    seg.setDestinationPort(remotePort);
+    seg.setPsh(true);
+    seg.setSeqNum(numSeq);
+    seg.setData(data, offset, length);
+    network.send(seg);
+  }
+  
+  public TCPSegment sendFIN(){
+    TCPSegment seg = new TCPSegment();
+    seg.setFin(true);
+    seg.setSourcePort(localPort);
+    seg.setDestinationPort(remotePort);
+    network.send(seg);
+    return seg;
   }
 
 }
