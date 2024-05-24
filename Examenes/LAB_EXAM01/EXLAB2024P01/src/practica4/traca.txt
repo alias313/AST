@@ -1,0 +1,277 @@
+run:
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5] +++++++++
+
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5] +++++++++
+
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4] +++++++++
+
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 5]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 4]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+								Receiver: received 11 bytes
+								Receiver: received 11 bytes
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5] +++++++++
+
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4] +++++++++
+
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5] +++++++++
+
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4] +++++++++
+
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 4]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+								Receiver: received 8 bytes
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+								Receiver: received 3 bytes
+								Receiver: received 11 bytes
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5] +++++++++
+
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5] +++++++++
+
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+								Receiver: received 4 bytes
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4] +++++++++
+
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 5]
+								Receiver: received 4 bytes
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 4]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+								Receiver: received 7 bytes
+								Receiver: received 7 bytes
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5] +++++++++
+
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5] +++++++++
+
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4] +++++++++
+
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+								Receiver: received 11 bytes
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4] +++++++++
+
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 4]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+								Receiver: received 8 bytes
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+								Receiver: received 3 bytes
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5] +++++++++
+
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4] +++++++++
+
+								Receiver: received 4 bytes
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 4]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+								Receiver: received 11 bytes
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+								Receiver: received 7 bytes
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5] +++++++++
+
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4] +++++++++
+
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 5]
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4] +++++++++
+
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 4]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4]
+								Receiver: received 8 bytes
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+								Receiver: received 11 bytes
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 4]
+								Receiver: received 3 bytes
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5] +++++++++
+
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5] +++++++++
+
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								Receiver: received 11 bytes
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+								Receiver: received 4 bytes
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4]
+								Receiver: received 7 bytes
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4] +++++++++
+
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 4]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5] +++++++++
+
+								Receiver: received 8 bytes
+								Receiver: received 4 bytes
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4] +++++++++
+
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 4]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+								Receiver: received 7 bytes
+								Receiver: received 3 bytes
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5] +++++++++
+
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4] +++++++++
+
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+								Receiver: received 11 bytes
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4] +++++++++
+
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 4]
+								Receiver: received 8 bytes
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+								Receiver: received 3 bytes
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5] +++++++++
+
+Sender: transmission finished
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 20, ackNum = 0, wnd = 0]
+								Receiver: received 4 bytes
+								received: [PSH, src = 20, dst = 80, seqNum = 0, payload = 4]
+		 +++++++++ SEGMENT MODIFICAT: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5] +++++++++
+
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+Sender: transmission finished
+			no matching socket for seg: [PSH, src = 0, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 5]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4]
+								received: [PSH, src = 30, dst = 80, seqNum = 0, payload = 4]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+  received: [ACK, src = 80, dst = 30, ackNum = 0, wnd = 0]
+								Receiver: received 4 bytes
+								Receiver: received 7 bytes
+								Receiver: reception finished
+								Receiver: received 7 bytes
+								Receiver: reception finished
+BUILD SUCCESSFUL (total time: 2 seconds)
+
