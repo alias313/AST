@@ -133,17 +133,7 @@ public class TSocket extends TSocket_base {
           break;
         }
         case ESTABLISHED:
-          if (rseg.isFin()) {
-            state = CLOSE_WAIT;
-            appCV.signal();
-          }
-          break;
         case FIN_WAIT:
-          if (rseg.isFin()) {
-            state = CLOSED;
-            appCV.signal();
-          }
-          break;
         case CLOSE_WAIT: {
           if (rseg.isPsh()) {
             if (state == ESTABLISHED || state == FIN_WAIT) {
@@ -155,7 +145,18 @@ public class TSocket extends TSocket_base {
             }
           }
           if (rseg.isFin()) {
-            appCV.signal();
+            switch (state) {
+              case ESTABLISHED:
+                state = CLOSE_WAIT;
+                appCV.signal();
+                break;
+              case FIN_WAIT:
+                state = CLOSED;
+                appCV.signal();
+                break;
+              default:
+                break;
+            }
           }
           break;
         }
