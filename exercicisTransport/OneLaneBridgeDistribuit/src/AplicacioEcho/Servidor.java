@@ -57,6 +57,15 @@ class Treballador implements Runnable {
     protected Pont pont;
     protected boolean running;
     protected String sentitActual;
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
 
     public Treballador(AstSocket s, Pont p) {
         socket = s;
@@ -71,15 +80,20 @@ class Treballador implements Runnable {
                 String sentit = socket.rebre();
                 //System.out.println("Receivec sentit: " + sentit);
 
+                String ANSI_CURRENT = new String();
                 switch (accio) {
                     case Comms.ENTRAR:
                         sentitActual = sentit;
+                        if (sentitActual.equals(Comms.NORT)) ANSI_CURRENT = ANSI_BLUE;
+                        else if (sentitActual.equals(Comms.SUR)) ANSI_CURRENT = ANSI_RED;
                         pont.entrar(sentit);
-                        socket.enviar("COTXE HA ENTRAT AL PONT PER " + sentitActual);
+                        socket.enviar(ANSI_CURRENT + "COTXE HA ENTRAT AL PONT PER " + sentitActual + ANSI_RESET);
                         break;
                     case Comms.SORTIR:
+                        if (sentitActual.equals(Comms.NORT)) ANSI_CURRENT = ANSI_BLUE;
+                        else if (sentitActual.equals(Comms.SUR)) ANSI_CURRENT = ANSI_RED;
                         pont.sortir();
-                        socket.enviar("COTXE HA SORTIT DEL PONT PER " + sentitActual);
+                        socket.enviar(ANSI_CURRENT + "\t\t\t\t\tCOTXE HA SORTIT DEL PONT PER " + sentitActual + ANSI_RESET);
                         break;
                     case Comms.NEVER:
                         running = false;

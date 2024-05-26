@@ -7,14 +7,15 @@ package AplicacioEcho;
 public class Client {
     public static void main(String[] args){
         String sentitDecidit;
-        PontRepresentant pont = new PontRepresentant(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR);
-        double rand = Math.random();
-        if (rand > 0.5) {
-            sentitDecidit = Comms.NORT;
-        } else {
-            sentitDecidit = Comms.SUR;
+        for (int i = 0; i < 5; i++) {
+            PontRepresentant pont = new PontRepresentant(Comms.IP_SERVIDOR, Comms.PORT_SERVIDOR);
+            double rand = Math.random();
+
+            if (rand > 0.5) sentitDecidit = Comms.NORT;
+            else sentitDecidit = Comms.SUR;
+
+            new Thread(new Cotxe(pont, sentitDecidit)).start();
         }
-        new Thread(new Cotxe(pont, sentitDecidit)).start();
     }
     
     
