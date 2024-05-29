@@ -1,0 +1,116 @@
+
+run:
+								received: [PSH, src = 10, dst = 80, seqNum = 0, payload = 1460]
+  received: [ACK, src = 80, dst = 10, ackNum = 1, wnd = 49]
+sender - cwnd: 2
+								received: [PSH, src = 10, dst = 80, seqNum = 1, payload = 1460]
+								received: [PSH, src = 10, dst = 80, seqNum = 2, payload = 80]
+  received: [ACK, src = 80, dst = 10, ackNum = 2, wnd = 48]
+sender - cwnd: 3
+  received: [ACK, src = 80, dst = 10, ackNum = 3, wnd = 47]
+sender - cwnd: 4
+								Receiver: received 2000 bytes
+		 +++++++++ SEGMENT LOST: [PSH, src = 10, dst = 80, seqNum = 5, payload = 80] +++++++++
+
+								received: [PSH, src = 10, dst = 80, seqNum = 3, payload = 1460]
+								received: [PSH, src = 10, dst = 80, seqNum = 4, payload = 1460]
+  received: [ACK, src = 80, dst = 10, ackNum = 4, wnd = 47]
+sender - cwnd: 5
+  received: [ACK, src = 80, dst = 10, ackNum = 5, wnd = 46]
+sender - cwnd: 6
+								received: [PSH, src = 10, dst = 80, seqNum = 6, payload = 1460]
+								received: [PSH, src = 10, dst = 80, seqNum = 7, payload = 1460]
+  received: [ACK, src = 80, dst = 10, ackNum = 5, wnd = 46]
+  received: [ACK, src = 80, dst = 10, ackNum = 5, wnd = 46]
+								received: [PSH, src = 10, dst = 80, seqNum = 8, payload = 80]
+  received: [ACK, src = 80, dst = 10, ackNum = 5, wnd = 46]
+								received: [PSH, src = 10, dst = 80, seqNum = 9, payload = 1460]
+								received: [PSH, src = 10, dst = 80, seqNum = 10, payload = 1460]
+  received: [ACK, src = 80, dst = 10, ackNum = 5, wnd = 46]
+  received: [ACK, src = 80, dst = 10, ackNum = 5, wnd = 46]
+								Receiver: received 2000 bytes
+sender - cwnd: 1
+NUM TO RETRANSMIT: 6
+retrans: [PSH, src = 10, dst = 80, seqNum = 5, payload = 80]
+								received: [PSH, src = 10, dst = 80, seqNum = 5, payload = 80]
+  received: [ACK, src = 80, dst = 10, ackNum = 6, wnd = 47]
+sender - cwnd: 2
+retrans: [PSH, src = 10, dst = 80, seqNum = 6, payload = 1460]
+retrans: [PSH, src = 10, dst = 80, seqNum = 7, payload = 1460]
+								received: [PSH, src = 10, dst = 80, seqNum = 6, payload = 1460]
+								received: [PSH, src = 10, dst = 80, seqNum = 7, payload = 1460]
+  received: [ACK, src = 80, dst = 10, ackNum = 7, wnd = 46]
+sender - cwnd: 3
+retrans: [PSH, src = 10, dst = 80, seqNum = 8, payload = 80]
+		 +++++++++ SEGMENT LOST: [PSH, src = 10, dst = 80, seqNum = 8, payload = 80] +++++++++
+
+retrans: [PSH, src = 10, dst = 80, seqNum = 9, payload = 1460]
+  received: [ACK, src = 80, dst = 10, ackNum = 8, wnd = 45]
+sender - cwnd: 4
+retrans: [PSH, src = 10, dst = 80, seqNum = 10, payload = 1460]
+								received: [PSH, src = 10, dst = 80, seqNum = 9, payload = 1460]
+		 +++++++++ SEGMENT LOST: [PSH, src = 10, dst = 80, seqNum = 11, payload = 80] +++++++++
+
+								received: [PSH, src = 10, dst = 80, seqNum = 10, payload = 1460]
+  received: [ACK, src = 80, dst = 10, ackNum = 8, wnd = 45]
+  received: [ACK, src = 80, dst = 10, ackNum = 8, wnd = 45]
+								Receiver: received 2000 bytes
+sender - cwnd: 1
+NUM TO RETRANSMIT: 4
+retrans: [PSH, src = 10, dst = 80, seqNum = 8, payload = 80]
+								received: [PSH, src = 10, dst = 80, seqNum = 8, payload = 80]
+  received: [ACK, src = 80, dst = 10, ackNum = 9, wnd = 47]
+sender - cwnd: 2
+retrans: [PSH, src = 10, dst = 80, seqNum = 9, payload = 1460]
+		 +++++++++ SEGMENT LOST: [PSH, src = 10, dst = 80, seqNum = 9, payload = 1460] +++++++++
+
+retrans: [PSH, src = 10, dst = 80, seqNum = 10, payload = 1460]
+								received: [PSH, src = 10, dst = 80, seqNum = 10, payload = 1460]
+  received: [ACK, src = 80, dst = 10, ackNum = 9, wnd = 47]
+								Receiver: received 2000 bytes
+sender - cwnd: 1
+NUM TO RETRANSMIT: 3
+retrans: [PSH, src = 10, dst = 80, seqNum = 9, payload = 1460]
+								received: [PSH, src = 10, dst = 80, seqNum = 9, payload = 1460]
+  received: [ACK, src = 80, dst = 10, ackNum = 10, wnd = 47]
+sender - cwnd: 2
+retrans: [PSH, src = 10, dst = 80, seqNum = 10, payload = 1460]
+		 +++++++++ SEGMENT LOST: [PSH, src = 10, dst = 80, seqNum = 10, payload = 1460] +++++++++
+
+retrans: [PSH, src = 10, dst = 80, seqNum = 11, payload = 80]
+								received: [PSH, src = 10, dst = 80, seqNum = 11, payload = 80]
+  received: [ACK, src = 80, dst = 10, ackNum = 10, wnd = 47]
+								Receiver: received 2000 bytes
+sender - cwnd: 1
+NUM TO RETRANSMIT: 2
+retrans: [PSH, src = 10, dst = 80, seqNum = 10, payload = 1460]
+								received: [PSH, src = 10, dst = 80, seqNum = 10, payload = 1460]
+  received: [ACK, src = 80, dst = 10, ackNum = 11, wnd = 48]
+sender - cwnd: 2
+retrans: [PSH, src = 10, dst = 80, seqNum = 11, payload = 80]
+		 +++++++++ SEGMENT LOST: [PSH, src = 10, dst = 80, seqNum = 11, payload = 80] +++++++++
+
+								received: [PSH, src = 10, dst = 80, seqNum = 12, payload = 1460]
+  received: [ACK, src = 80, dst = 10, ackNum = 11, wnd = 48]
+								Receiver: received 1920 bytes
+sender - cwnd: 1
+NUM TO RETRANSMIT: 2
+retrans: [PSH, src = 10, dst = 80, seqNum = 11, payload = 80]
+								received: [PSH, src = 10, dst = 80, seqNum = 11, payload = 80]
+  received: [ACK, src = 80, dst = 10, ackNum = 12, wnd = 49]
+sender - cwnd: 2
+retrans: [PSH, src = 10, dst = 80, seqNum = 12, payload = 1460]
+								received: [PSH, src = 10, dst = 80, seqNum = 12, payload = 1460]
+								received: [PSH, src = 10, dst = 80, seqNum = 13, payload = 1460]
+  received: [ACK, src = 80, dst = 10, ackNum = 13, wnd = 48]
+sender - cwnd: 3
+  received: [ACK, src = 80, dst = 10, ackNum = 14, wnd = 47]
+sender - cwnd: 4
+Sender: transmission finished
+								received: [PSH, src = 10, dst = 80, seqNum = 14, payload = 80]
+  received: [ACK, src = 80, dst = 10, ackNum = 15, wnd = 46]
+sender - cwnd: 5
+								Receiver: received 2000 bytes
+								Receiver: received 1080 bytes
+								Receiver: reception finished
+BUILD SUCCESSFUL (total time: 5 seconds)
