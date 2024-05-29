@@ -125,7 +125,7 @@ class PontReal implements Pont {
         try {
             boolean sentitMeu = false; // default
             if (sentitCotxe.equals(Comms.NORT)) sentitMeu = true;
-            else if (sentitCotxe.equals(Comms.SUR)) sentitMeu = true;
+            else if (sentitCotxe.equals(Comms.SUR)) sentitMeu = false;
             else {
                 System.out.println("FORMAT DE SENTIT INCORRECTE");
                 System.exit(1);
@@ -150,7 +150,9 @@ class PontReal implements Pont {
             }
 
             cotxesEnTransit++;
-            System.out.println("COTXE HA ENTRAT");
+            System.out.print("COTXE HA ENTRAT SENTIT ");
+            if (sentitActual) System.out.println("NORT");
+            else if (!sentitActual) System.out.println("SUR");
         } catch (Exception ex) {
             System.out.println(ex);
         } finally {
@@ -162,11 +164,13 @@ class PontReal implements Pont {
         mon.lock();
         try {
             cotxesEnTransit--;
+            System.out.print("COTXE HA SORTIT SENTIT ");
+            if (sentitActual) System.out.println("NORT");
+            else if (!sentitActual) System.out.println("SUR");
             if (cotxesEnTransit == 0 && cotxesSentitContrariEsperant > 0) {
                 sentitActual = !sentitActual;
                 sentitContrariPotPassar.signalAll();
             }
-            System.out.println("COTXE HA SORTIT");
         } finally {
             mon.unlock();
         }
